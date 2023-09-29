@@ -1,10 +1,12 @@
 # Project Timer
 
-This project will feature a timer that will employ the **Pomodoro Technique**. 
+This project will feature a **timer** that employs the **Pomodoro Technique**. 
 
-It can be hard to remain focused throughout the day when you have to allocate a large amount of time to a specific project or schoolwork. This application serves to provide timers that can break up that time into intervals of focused studying and short breaks. As these timers are completed they will be recorded and you will be able to view how much time you have spent on a certain project. 
+## Purpose
 
-I am interested in this project as I have used similar applications before, but I have found that they do not let you thoroughly analyze or visualize how your time has been spent.
+It can be hard to remain focused throughout the day when you have to allocate a large amount of time towards a specific project or schoolwork. This application serves to provide timers that can break up that time into intervals of focused working/studying and short breaks. As these timers are completed they will be recorded and you will be able to visualize time spent. 
+
+I am interested in this project as I have used similar applications before, but I have found that they do not let you thoroughly visualize and analyze time spent.
 
 ## What is the Pomodoro Technique?
 
@@ -15,7 +17,7 @@ The Pomodoro Technique was developed by Francesco Cirillo and it is a time manag
 ## User Stories
 
 - As a user, I want to be able to name and create a new project (ex. CPSC210) and add it to a list of projects (ex. School)
-- As a user, I want to be able to start, pause and complete a 25 minute timer, followed by a 5 minute break for a selected project.
+- As a user, I want to be able to start, pause and complete a 25 minute timer, followed by a 5 minute break for a selected project. If 4 cycles have been completed, I want the option to start a long break.
 - As a user, I want the option to add tags to each individual timer session, ex. (Term project, midterm1, final), to further specify tasks within a project.
 - As a user I want to be able to abruptly end a timer and still have time recorded
 - As a user, I want to be able to modify the default timer durations. For example 25 min -> 40 min of focused work, and 5 min -> 10 min for breaks.
