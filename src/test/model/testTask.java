@@ -16,7 +16,7 @@ public class testTask {
 
     @BeforeEach
     private void runBefore() {
-        testTask = new Task("testTask", 1, 1);
+        testTask = new Task("testTask", 1, 1, 1);
         testDate1 = LocalDate.of(2000, 01, 01);
         testDate2 = LocalDate.of(2000, 01, 02);
     }
