@@ -11,6 +11,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class testProject {
     private Project testProject;
     private Task testTask1;
+    private Task testTask1Dup;
     private Task testTask2;
     private List<Task> taskList;
     private LocalDate testDate1;
@@ -21,6 +22,7 @@ public class testProject {
     void startUp() {
         testProject = new Project("testProject");
         testTask1 = new Task("Task1");
+        testTask1Dup = new Task("Task1");
         testTask2 = new Task("Task2");
         testDate1 = LocalDate.of(2000, 01, 01);
         testDate2 = LocalDate.of(2000, 01, 02);
@@ -30,7 +32,16 @@ public class testProject {
 
     @Test
     void testAddTask() {
-        testProject.addTask(testTask1);
+        assertTrue(testProject.addTask(testTask1));
+        taskList = testProject.getTaskList();
+        assertEquals(1, taskList.size());
+        assertEquals(testTask1, taskList.get(0));
+    }
+
+    @Test
+    void testAddTaskSameName() {
+        assertTrue(testProject.addTask(testTask1));
+        assertFalse(testProject.addTask(testTask1Dup));
         taskList = testProject.getTaskList();
         assertEquals(1, taskList.size());
         assertEquals(testTask1, taskList.get(0));

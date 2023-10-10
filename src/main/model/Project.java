@@ -14,9 +14,16 @@ public class Project {
     }
 
     // MODIFIES: this
-    // EFFECTS: Appends a task to the list of tasks
-    public void addTask(Task task) {
+    // EFFECTS: Appends a task to the list of tasks,
+    // only if the task has a unique name
+    public boolean addTask(Task task) {
+        for (int i = 0; i < tasks.size(); i++) {
+            if (tasks.get(i).getName() == task.getName()) {
+                return false;
+            }
+        }
         this.tasks.add(task);
+        return true;
     }
 
     // MODIFIES: this
