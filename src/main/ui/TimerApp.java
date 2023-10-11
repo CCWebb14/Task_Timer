@@ -191,17 +191,7 @@ public class TimerApp {
             currentTimer = setTimer(curTask, curState, latch);
             Thread timerControllerThread = new Thread(() -> timerController());
             timerControllerThread.start();
-            try {
-                latch.await();
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-            manageOutputPostTimer(currentTimer, curState);
-            try {
-                timerControllerThread.join();
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
+            handleThreads(latch, timerControllerThread, curState);
             completedWorkTimers = incrementCompletedWorkTimers(curState, completedWorkTimers);
             curState = manageState(currentTimer, curTask, curState, completedWorkTimers);
             if (currentTimer.isTimerCancelled()) {
@@ -224,6 +214,24 @@ public class TimerApp {
         currentTimer.startTimer();
         return currentTimer;
     }
+
+    // EFFECTS: Awaits the completion of the latch and the completion of timerController thread
+    // SOUT by manageOutputTimer inbetween thread completion
+    private void handleThreads(CountDownLatch latch, Thread timerControllerThread, String curState) {
+        try {
+            latch.await();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        manageOutputPostTimer(currentTimer, curState);
+        try {
+            timerControllerThread.join();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
 
     // EFFECTS: Creates SOUT after the main thread has waited for timer completion
     // Displays how many minutes will be recorded if it was a work timer
