@@ -5,6 +5,7 @@ import model.Task;
 import model.TimerSession;
 
 import java.time.LocalDate;
+import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 import java.util.concurrent.CountDownLatch;
@@ -140,16 +141,13 @@ public class TimerApp {
     }
 
     // MODIFIES: this
-    // EFFECTS: Displays the 3 durations of the current task
-    // Displays the menu for the given task
+    // EFFECTS: Displays the menu for the given task
     // Processes user input
     // Can call runTimer and editTask on the given task
     private void taskMenu(int taskNum) {
         Task curTask = project.getTaskFromIndex(taskNum);
         while (true) {
-            System.out.println(curTask.getName() + " Work Duration: " + curTask.getWorkDurationMinutes()
-                    + " Break Duration: " + curTask.getBreakDurationMinutes()
-                    + " Long Break Duration: " + curTask.getLongBreakDurationMinutes());
+            listDurations(curTask);
             System.out.println("[1] Start Timer [2] Edit Timer Durations [3] Back");
             intInput = keyboard.nextInt();
             if (intInput == 1) {
@@ -164,22 +162,35 @@ public class TimerApp {
         }
     }
 
+    // EFFECTS: SOUT the durations of the given task
+    private void listDurations(Task curTask) {
+        System.out.println(curTask.getName() + " Work Duration: " + curTask.getWorkDurationMinutes()
+                + " Break Duration: " + curTask.getBreakDurationMinutes()
+                + " Long Break Duration: " + curTask.getLongBreakDurationMinutes());
+    }
+
+
     // MODIFIES: this
     // EFFECTS: Takes in 3 user inputs and re-assigns task durations
     private void editTask(Task curTask) {
-        keyboard.nextLine();
-        System.out.println("Enter a new work duration (minutes):");
-        intInput = keyboard.nextInt();
-        curTask.setWorkDurationMinutes(intInput);
-        System.out.println("Work duration successfully changed to " + intInput + " minutes");
-        System.out.println("Enter a new short break duration (minutes):");
-        intInput = keyboard.nextInt();
-        curTask.setBreakDurationMinutes(intInput);
-        System.out.println("Short break duration successfully changed to " + intInput + " minutes");
-        System.out.println("Enter a new long break duration (minutes):");
-        intInput = keyboard.nextInt();
-        curTask.setLongBreakDurationMinutes(intInput);
-        System.out.println("Long break duration successfully changed to " + intInput + " minutes");
+        try {
+            keyboard.nextLine();
+            System.out.println("Enter a new work duration (minutes):");
+            int intInputWork = keyboard.nextInt();
+            curTask.setWorkDurationMinutes(intInput);
+            System.out.println("Enter a new short break duration (minutes):");
+            int intInputBreak = keyboard.nextInt();
+            System.out.println("Enter a new long break duration (minutes):");
+            int intInputLongBreak = keyboard.nextInt();
+            curTask.setWorkDurationMinutes(intInputWork);
+            curTask.setBreakDurationMinutes(intInputBreak);
+            curTask.setLongBreakDurationMinutes(intInputLongBreak);
+            System.out.println("Successfully changed timer durations");
+        } catch (InputMismatchException e) {
+            keyboard.nextLine();
+            System.out.println("Incorrect input, cancelling edit duration.");
+        }
+
     }
 
     // MODIFIES: this
