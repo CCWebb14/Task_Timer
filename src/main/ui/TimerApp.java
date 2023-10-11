@@ -12,12 +12,6 @@ import java.util.concurrent.CountDownLatch;
 
 // Project timer application
 public class TimerApp {
-    Task cpsc210;
-    Task cpsc121;
-    Task phil220;
-    Task dsci100;
-    Task cpsc213;
-    Task cpsc221;
     Project project;
     Scanner keyboard;
     int intInput;
@@ -37,14 +31,19 @@ public class TimerApp {
         System.out.println("Application Closing");
     }
 
+    // MODIFIES: this
+    // EFFECTS: initializes project and scanner
     private void init() {
-        cpsc210 = new Task("CPSC210", 1, 1, 1);
-        cpsc121 = new Task("CPSC121", 2, 2, 2);
-        phil220 = new Task("PHIL220", 3, 3, 3);
-        dsci100 = new Task("DSCI100", 4, 4, 4);
-        cpsc213 = new Task("CPSC213", 5, 5, 5);
-        cpsc221 = new Task("CPSC221", 6, 6, 6);
         project = new Project("School");
+        keyboard = new Scanner(System.in);
+
+        // For demonstration purposes
+        Task cpsc210 = new Task("CPSC210", 1, 1, 1);
+        Task cpsc121 = new Task("CPSC121", 2, 2, 2);
+        Task phil220 = new Task("PHIL220", 3, 3, 3);
+        Task dsci100 = new Task("DSCI100", 4, 4, 4);
+        Task cpsc213 = new Task("CPSC213", 5, 5, 5);
+        Task cpsc221 = new Task("CPSC221", 6, 6, 6);
         cpsc121.recordTime(LocalDate.now(), 5);
         phil220.recordTime(LocalDate.now(), 10);
         dsci100.recordTime(LocalDate.now(), 15);
@@ -54,7 +53,6 @@ public class TimerApp {
         project.addTask(dsci100);
         project.addTask(cpsc213);
         project.addTask(cpsc221);
-        keyboard = new Scanner(System.in);
     }
 
     // MODIFIES: this
@@ -63,7 +61,7 @@ public class TimerApp {
     private void mainMenu() {
         while (true) {
             System.out.println("[1] Timer [2] Task Breakdown [3] Add New Task [4] Quit");
-            intInput = keyboard.nextInt();
+            intInput = handleIntInput();
             if (intInput == 1) {
                 listTasksMenu();
             } else if (intInput == 2) {
@@ -73,7 +71,19 @@ public class TimerApp {
             } else if (intInput == 4) {
                 break;
             } else {
-                System.out.println("Invalid Input. Please enter a number 1-4.");
+                System.out.println("Invalid number. Please enter a number 1-4.");
+            }
+        }
+    }
+
+    // EFFECTS: Requests user input, if it is not an int clear scanner and retry
+    private int handleIntInput() {
+        while (true) {
+            try {
+                return keyboard.nextInt();
+            } catch (InputMismatchException e) {
+                keyboard.nextLine();
+                System.out.println("Please enter a number");
             }
         }
     }
@@ -101,7 +111,7 @@ public class TimerApp {
         while (true) {
             result = createListTasksMenuOptions(tasks, page);
             System.out.println(result);
-            intInput = keyboard.nextInt();
+            intInput = handleIntInput();
             if (intInput == 7) {
                 return;
             }
@@ -112,7 +122,7 @@ public class TimerApp {
                 if (tasks.size() - 1 >= taskNum) {
                     taskMenu(taskNum);
                 } else {
-                    System.out.println("Invalid selection. Please try again.");
+                    System.out.println("Invalid number. Please try again.");
                 }
             }
         }
@@ -149,7 +159,7 @@ public class TimerApp {
         while (true) {
             listDurations(curTask);
             System.out.println("[1] Start Timer [2] Edit Timer Durations [3] Back");
-            intInput = keyboard.nextInt();
+            intInput = handleIntInput();
             if (intInput == 1) {
                 runTimer(curTask);
             } else if (intInput == 2) {
@@ -157,40 +167,33 @@ public class TimerApp {
             } else if (intInput == 3) {
                 return;
             } else {
-                System.out.println("Invalid Input. Please enter a number 1-3.");
+                System.out.println("Invalid number. Please enter a number 1-3.");
             }
         }
     }
 
     // EFFECTS: SOUT the durations of the given task
     private void listDurations(Task curTask) {
-        System.out.println(curTask.getName() + " Work Duration: " + curTask.getWorkDurationMinutes()
-                + " Break Duration: " + curTask.getBreakDurationMinutes()
-                + " Long Break Duration: " + curTask.getLongBreakDurationMinutes());
+        System.out.println(curTask.getName() + " Work duration: " + curTask.getWorkDurationMinutes()
+                + " Break duration: " + curTask.getBreakDurationMinutes()
+                + " Long break Duration: " + curTask.getLongBreakDurationMinutes());
     }
-
 
     // MODIFIES: this
     // EFFECTS: Takes in 3 user inputs and re-assigns task durations
     private void editTask(Task curTask) {
-        try {
-            keyboard.nextLine();
-            System.out.println("Enter a new work duration (minutes):");
-            int intInputWork = keyboard.nextInt();
-            curTask.setWorkDurationMinutes(intInput);
-            System.out.println("Enter a new short break duration (minutes):");
-            int intInputBreak = keyboard.nextInt();
-            System.out.println("Enter a new long break duration (minutes):");
-            int intInputLongBreak = keyboard.nextInt();
-            curTask.setWorkDurationMinutes(intInputWork);
-            curTask.setBreakDurationMinutes(intInputBreak);
-            curTask.setLongBreakDurationMinutes(intInputLongBreak);
-            System.out.println("Successfully changed timer durations");
-        } catch (InputMismatchException e) {
-            keyboard.nextLine();
-            System.out.println("Incorrect input, cancelling edit duration.");
-        }
-
+        keyboard.nextLine();
+        System.out.println("Enter a new work duration (minutes):");
+        int intInputWork = handleIntInput();
+        curTask.setWorkDurationMinutes(intInput);
+        System.out.println("Enter a new short break duration (minutes):");
+        int intInputBreak = handleIntInput();
+        System.out.println("Enter a new long break duration (minutes):");
+        int intInputLongBreak = handleIntInput();
+        curTask.setWorkDurationMinutes(intInputWork);
+        curTask.setBreakDurationMinutes(intInputBreak);
+        curTask.setLongBreakDurationMinutes(intInputLongBreak);
+        System.out.println("Successfully changed timer durations");
     }
 
     // MODIFIES: this
@@ -219,12 +222,12 @@ public class TimerApp {
         TimerSession currentTimer;
         if (curState == "Work") {
             currentTimer = new TimerSession(curTask.getWorkDurationMinutes(), latch);
-        } else if (curState == "Short Break") {
+        } else if (curState == "Short break") {
             currentTimer = new TimerSession(curTask.getBreakDurationMinutes(), latch);
         } else {
             currentTimer = new TimerSession(curTask.getLongBreakDurationMinutes(), latch);
         }
-        System.out.println(curState + " timer Started");
+        System.out.println(curState + " timer started");
         currentTimer.startTimer();
         return currentTimer;
     }
@@ -245,8 +248,6 @@ public class TimerApp {
         }
     }
 
-
-
     // EFFECTS: Creates SOUT after the main thread has waited for timer completion
     // Displays how many minutes will be recorded if it was a work timer
     private void manageOutputPostTimer(TimerSession currentTimer, String curState) {
@@ -254,7 +255,7 @@ public class TimerApp {
             int completedMinutes = currentTimer.calculateCompletedMinutes();
             if (currentTimer.isTimerComplete()) {
                 System.out.println(curState
-                        + " timer Complete! " + completedMinutes
+                        + " timer complete! " + completedMinutes
                         + " minutes will be recorded. Enter any number to continue");
             } else {
                 System.out.println(curState
@@ -264,27 +265,26 @@ public class TimerApp {
         } else {
             if (currentTimer.isTimerComplete()) {
                 System.out.println(curState
-                        + " timer Complete! Enter any number to continue");
+                        + " timer complete! Enter any number to continue");
             } else {
                 System.out.println(curState
-                        + "timer cancelled. Enter any number to continue");
+                        + " timer cancelled. Enter any number to continue");
             }
         }
-
     }
 
     // EFFECTS: Modifies the current state
-    // Work -> Short Break
-    // 3X Work -> Long Break
+    // Work -> Short break
+    // 3X Work -> Long break
     // Break -> Work
     private String manageState(TimerSession currentTimer, Task curTask, String curState, int completedWorkTimers) {
         if (curState == "Work") {
             curTask.recordTime(LocalDate.now(), currentTimer.calculateCompletedMinutes());
         }
         if (curState == "Work" && completedWorkTimers >= 3) {
-            return "Long Break";
+            return "Long break";
         } else if (curState == "Work") {
-            return "Short Break";
+            return "Short break";
         } else {
             return "Work";
         }
@@ -294,14 +294,13 @@ public class TimerApp {
     // If a long break has just been completed, completedWorkTimers will be set to zero
     private int incrementCompletedWorkTimers(String curState, int completedWorkTimers) {
         if (curState == "Work") {
-            return completedWorkTimers++;
-        } else if (curState == "Long Break") {
+            return ++completedWorkTimers;
+        } else if (curState == "Long break") {
             return 0;
         } else {
             return completedWorkTimers;
         }
     }
-
 
     // MODIFIES: this
     // EFFECTS: Takes in user input to modify the timer state
@@ -309,7 +308,7 @@ public class TimerApp {
         System.out.println("[1] Pause/Start Timer [2] Cancel Timer");
         int intInput;
         while (true) {
-            intInput = keyboard.nextInt();
+            intInput = handleIntInput();
             if (currentTimer.isTimerComplete() || currentTimer.isTimerCancelled()) {
                 break;
             } else {
@@ -324,7 +323,7 @@ public class TimerApp {
                 } else if (intInput == 2) {
                     currentTimer.cancelTimer();
                 } else {
-                    System.out.println("Invalid input. Please enter 1 or 2.");
+                    System.out.println("Invalid number. Please enter 1 or 2.");
                 }
             }
         }
@@ -339,7 +338,4 @@ public class TimerApp {
         }
         return minutesRemaining + ":" + secondsRemaining;
     }
-
-
-
 }
