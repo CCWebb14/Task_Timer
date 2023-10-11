@@ -41,5 +41,21 @@ public class Project {
         return tasks;
     }
 
+    // EFFECTS: Returns a task from the given index
+    public Task getTaskFromIndex(int index) {
+        return tasks.get(index);
+    }
 
+    // EFFECTS: Creates a string of all tasks and their total minutes
+    public String generateAllTaskMinutes() {
+        if (tasks.size() == 0) {
+            return "No tasks to display";
+        }
+        String result = "";
+        for (int i = 0; i < tasks.size(); i++) {
+            Task curTask = tasks.get(i);
+            result += "(" + curTask.getName() + ") " + curTask.getTotalMinutes() + " min ";
+        }
+        return result;
+    }
 }
