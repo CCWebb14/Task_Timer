@@ -12,14 +12,12 @@ public class TimerSession {
     private int secondsRemaining;
     private Timer timer;
     private CountDownLatch latch;
-    private Boolean timerComplete;
     private Boolean timerCancelled;
 
     public TimerSession(int minutes, CountDownLatch latch) {
         this.timerDurationMinutes = minutes;
         this.minutesRemaining = minutes;
         this.secondsRemaining = 0;
-        this.timerComplete = false;
         this.timerCancelled = false;
         this.latch = latch;
 
@@ -34,7 +32,6 @@ public class TimerSession {
                 secondsRemaining = 59;
             } else {
                 timer.stop();
-                timerComplete = true;
                 this.latch.countDown();
             }
         });
@@ -81,11 +78,7 @@ public class TimerSession {
 
     // EFFECTS: Determines if timer is complete and returns true if it is
     public boolean isTimerComplete() {
-        // For testing purposes
-        if (minutesRemaining <= 0 && secondsRemaining <= 0) {
-            timerComplete = true;
-        }
-        return timerComplete;
+        return minutesRemaining <= 0 && secondsRemaining <= 0;
     }
 
     public boolean isTimerRunning() {
@@ -104,7 +97,5 @@ public class TimerSession {
     public int getSecondsRemaining() {
         return secondsRemaining;
     }
-
-
 
 }
