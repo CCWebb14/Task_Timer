@@ -16,13 +16,13 @@ public class TestTask {
 
     @BeforeEach
     private void runBefore() {
-        testTask = new Task("testTask", 1, 1, 1);
+        testTask = new Task("testTask", 1, 2, 3);
         testDate1 = LocalDate.of(2000, 01, 01);
         testDate2 = LocalDate.of(2000, 01, 02);
     }
 
     @Test
-    void recordTimeFirstEntry() {
+    void testRecordTimeFirstEntry() {
         assertEquals(0, testTask.getHistoryDict().size());
         testTask.recordTime(testDate1, 1);
         testDict = testTask.getHistoryDict();
@@ -31,7 +31,20 @@ public class TestTask {
     }
 
     @Test
-    void recordTimeMultipleEntries() {
+    void testGetSet() {
+        assertEquals(1, testTask.getWorkDurationMinutes());
+        assertEquals(2, testTask.getBreakDurationMinutes());
+        assertEquals(3, testTask.getLongBreakDurationMinutes());
+        testTask.setWorkDurationMinutes(4);
+        assertEquals(4, testTask.getWorkDurationMinutes());
+        testTask.setBreakDurationMinutes(5);
+        assertEquals(5, testTask.getBreakDurationMinutes());
+        testTask.setLongBreakDurationMinutes(6);
+        assertEquals(6, testTask.getLongBreakDurationMinutes());
+    }
+
+    @Test
+    void testRecordTimeMultipleEntries() {
         testTask.recordTime(testDate1, 1);
         testTask.recordTime(testDate2, 5);
         testDict = testTask.getHistoryDict();
@@ -43,7 +56,7 @@ public class TestTask {
     }
 
     @Test
-    void recordTimeMultipleEntriesSameDay() {
+    void testRecordTimeMultipleEntriesSameDay() {
         testTask.recordTime(testDate1, 1);
         testTask.recordTime(testDate2, 5);
         testTask.recordTime(testDate2, 10);
