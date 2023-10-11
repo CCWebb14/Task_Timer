@@ -44,6 +44,9 @@ public class TimerApp {
         cpsc213 = new Task("CPSC213", 5, 5, 5);
         cpsc221 = new Task("CPSC221", 6, 6, 6);
         project = new Project("School");
+        cpsc121.recordTime(LocalDate.now(), 5);
+        phil220.recordTime(LocalDate.now(), 10);
+        dsci100.recordTime(LocalDate.now(), 15);
         project.addTask(cpsc210);
         project.addTask(cpsc121);
         project.addTask(phil220);
