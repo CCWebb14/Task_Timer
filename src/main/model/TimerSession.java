@@ -6,7 +6,6 @@ import java.util.concurrent.CountDownLatch;
 // Represents a TimerSession, a TimerSession holds a java swing timer
 // A timer is set with a given amount of minutes and performs an operation every second.
 // The object is also given a latch to notify the main thread when it is complete
-
 public class TimerSession {
     private int timerDurationMinutes;
     private int minutesRemaining;
@@ -72,7 +71,11 @@ public class TimerSession {
     }
 
     // EFFECTS: Subtracts minutesRemaining from timerDurationMinutes and returns the value
+    // If there are seconds remaining, subtract 1 from returned value (incomplete minute)
     public int calculateCompletedMinutes() {
+        if (secondsRemaining > 0) {
+            return (timerDurationMinutes - minutesRemaining - 1);
+        }
         return (timerDurationMinutes - minutesRemaining);
     }
 
@@ -96,6 +99,10 @@ public class TimerSession {
 
     public int getMinutesRemaining() {
         return minutesRemaining;
+    }
+
+    public int getSecondsRemaining() {
+        return secondsRemaining;
     }
 
 
