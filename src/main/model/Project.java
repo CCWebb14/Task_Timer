@@ -41,6 +41,7 @@ public class Project {
         return tasks;
     }
 
+    // REQUIRES: index <= tasks.size()
     // EFFECTS: Returns a task from the given index
     public Task getTaskFromIndex(int index) {
         return tasks.get(index);
