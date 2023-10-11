@@ -29,7 +29,7 @@ public class TimerSession {
         this.timer = new Timer(1000, e -> {
             if (secondsRemaining > 1) {
                 secondsRemaining--;
-            } else if (secondsRemaining <= 1 && minutesRemaining <= 0) {
+            } else if (minutesRemaining == 0) {
                 secondsRemaining--;
                 timer.stop();
                 timerComplete = true;
