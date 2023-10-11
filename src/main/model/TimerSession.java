@@ -13,26 +13,30 @@ public class TimerSession {
     private Timer timer;
     private CountDownLatch latch;
     private Boolean timerCancelled;
+    private Boolean timerComplete;
 
     public TimerSession(int minutes, CountDownLatch latch) {
         this.timerDurationMinutes = minutes;
         this.minutesRemaining = minutes;
         this.secondsRemaining = 0;
         this.timerCancelled = false;
+        this.timerComplete = false;
         this.latch = latch;
 
         // Triggers event every 1s
         // if timer is running
         // Once complete, the latch is counted down in order to notify main thread
         this.timer = new Timer(1000, e -> {
-            if (secondsRemaining > 0) {
+            if (secondsRemaining > 1) {
                 secondsRemaining--;
-            } else if (minutesRemaining > 0) {
+            } else if (secondsRemaining <= 1 && minutesRemaining <= 0) {
+                secondsRemaining--;
+                timer.stop();
+                timerComplete = true;
+                this.latch.countDown();
+            } else {
                 minutesRemaining--;
                 secondsRemaining = 59;
-            } else {
-                timer.stop();
-                this.latch.countDown();
             }
         });
     }
@@ -78,7 +82,7 @@ public class TimerSession {
 
     // EFFECTS: Determines if timer is complete and returns true if it is
     public boolean isTimerComplete() {
-        return minutesRemaining <= 0 && secondsRemaining <= 0;
+        return timerComplete;
     }
 
     public boolean isTimerRunning() {

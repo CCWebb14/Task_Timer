@@ -75,6 +75,7 @@ public class TestProject {
 
     @Test
     void testGenerateAllTaskMinutes() {
+        assertEquals("No tasks to display", testProject.generateAllTaskMinutes());
         testProject.addTask(testTask1);
         testProject.addTask(testTask2);
         String expectedString = "(Task1) 25 min (Task2) 50 min ";

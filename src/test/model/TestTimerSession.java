@@ -42,7 +42,6 @@ public class TestTimerSession {
         assertEquals(1, testTimerSession.getMinutesRemaining());
         testTimerSession.fastForwardTimer(1, 0);
         assertEquals(0, testTimerSession.getMinutesRemaining());
-        assertTrue(testTimerSession.isTimerComplete());
     }
 
     @Test
@@ -67,11 +66,22 @@ public class TestTimerSession {
 
     @Test
     void testTimerComplete() throws InterruptedException {
+        // 30 min, 0 sec
         assertFalse(testTimerSession.isTimerComplete());
         assertEquals(1, testLatch.getCount());
-        testTimerSession.fastForwardTimer(30, 0);
+        testTimerSession.fastForwardTimer(28, 0);
         testTimerSession.startTimer();
-        Thread.sleep(2000);
+        Thread.sleep(1100);
+        // 1 min, ~59 sec
+        assertFalse(testTimerSession.isTimerComplete());
+        testTimerSession.fastForwardTimer(1, 0);
+        // 0 min, ~59 sec
+        assertFalse(testTimerSession.isTimerComplete());
+        testTimerSession.fastForwardTimer(0, 58);
+        // 0 min, ~1 sec
+        assertFalse(testTimerSession.isTimerComplete());
+        Thread.sleep(1100);
+        // 0 min, 0 sec
         assertTrue(testTimerSession.isTimerComplete());
         assertEquals(0, testLatch.getCount());
     }
