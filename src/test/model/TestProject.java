@@ -8,7 +8,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class testProject {
+public class TestProject {
     private Project testProject;
     private Task testTask1;
     private Task testTask1Dup;

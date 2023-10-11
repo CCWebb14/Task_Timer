@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import java.util.concurrent.CountDownLatch;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class testTimerSession {
+public class TestTimerSession {
     TimerSession testTimerSession;
     CountDownLatch testLatch;
 

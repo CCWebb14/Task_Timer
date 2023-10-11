@@ -8,7 +8,7 @@ import java.util.Dictionary;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class testTask {
+public class TestTask {
     private Task testTask;
     private LocalDate testDate1;
     private LocalDate testDate2;
