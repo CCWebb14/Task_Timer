@@ -8,7 +8,6 @@ import java.time.LocalDate;
 import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
-import java.util.concurrent.CountDownLatch;
 
 // Project timer application
 public class TimerApp {
@@ -17,7 +16,6 @@ public class TimerApp {
     int intInput;
     int taskNum;
     TimerSession currentTimer;
-    CountDownLatch latch;
 
     public TimerApp() {
         runApp();
@@ -199,16 +197,14 @@ public class TimerApp {
     // MODIFIES: this
     // EFFECTS: Handles the state of the timer (work, break, long break)
     // Creates 2 threads (Timer thread and timerController thread)
-    // The countdown latch controls both
     private void runTimer(Task curTask) {
         int completedWorkTimers = 0;
         String curState = "Work";
         while (true) {
-            latch = new CountDownLatch(1);
-            currentTimer = setTimer(curTask, curState, latch);
+            currentTimer = setTimer(curTask, curState);
             Thread timerControllerThread = new Thread(() -> timerController());
             timerControllerThread.start();
-            handleThreads(latch, timerControllerThread, curState);
+            handleThreads(timerControllerThread, curState);
             completedWorkTimers = incrementCompletedWorkTimers(curState, completedWorkTimers);
             curState = manageState(currentTimer, curTask, curState, completedWorkTimers);
             if (currentTimer.isTimerCancelled()) {
@@ -218,25 +214,25 @@ public class TimerApp {
     }
 
     // EFFECTS: Creates a timer session based on the given task and state
-    private TimerSession setTimer(Task curTask, String curState, CountDownLatch latch) {
+    private TimerSession setTimer(Task curTask, String curState) {
         TimerSession currentTimer;
         if (curState == "Work") {
-            currentTimer = new TimerSession(curTask.getWorkDurationMinutes(), latch);
+            currentTimer = new TimerSession(curTask.getWorkDurationMinutes());
         } else if (curState == "Short break") {
-            currentTimer = new TimerSession(curTask.getBreakDurationMinutes(), latch);
+            currentTimer = new TimerSession(curTask.getBreakDurationMinutes());
         } else {
-            currentTimer = new TimerSession(curTask.getLongBreakDurationMinutes(), latch);
+            currentTimer = new TimerSession(curTask.getLongBreakDurationMinutes());
         }
         System.out.println(curState + " timer started");
         currentTimer.startTimer();
         return currentTimer;
     }
 
-    // EFFECTS: Awaits the completion of the latch and the completion of timerController thread
+    // EFFECTS: Awaits the completion of the timer and the completion of timerController thread
     // SOUT by manageOutputTimer inbetween thread completion
-    private void handleThreads(CountDownLatch latch, Thread timerControllerThread, String curState) {
+    private void handleThreads(Thread timerControllerThread, String curState) {
         try {
-            latch.await();
+            currentTimer.awaitTimer();
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }

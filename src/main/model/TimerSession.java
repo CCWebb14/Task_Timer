@@ -15,13 +15,13 @@ public class TimerSession {
     private Boolean timerCancelled;
     private Boolean timerComplete;
 
-    public TimerSession(int minutes, CountDownLatch latch) {
+    public TimerSession(int minutes) {
         this.timerDurationMinutes = minutes;
         this.minutesRemaining = minutes;
         this.secondsRemaining = 0;
         this.timerCancelled = false;
         this.timerComplete = false;
-        this.latch = latch;
+        this.latch = new CountDownLatch(1);
 
         // Triggers event every 1s
         // if timer is running
@@ -29,7 +29,7 @@ public class TimerSession {
         this.timer = new Timer(1000, e -> {
             if (secondsRemaining > 1) {
                 secondsRemaining--;
-            } else if (minutesRemaining == 0) {
+            } else if (minutesRemaining <= 0) {
                 secondsRemaining--;
                 timer.stop();
                 timerComplete = true;
@@ -51,6 +51,12 @@ public class TimerSession {
     // EFFECTS: Stops 1s timer
     public void pauseTimer() {
         timer.stop();
+    }
+
+    // EFFECTS: Awaits the countdown of the latch
+    // Throws an InterruptedException if the thread is interrupted while waiting
+    public void awaitTimer() throws InterruptedException {
+        latch.await();
     }
 
     // MODIFIES: this
@@ -80,19 +86,17 @@ public class TimerSession {
         return (timerDurationMinutes - minutesRemaining);
     }
 
-    // EFFECTS: Determines if timer is complete and returns true if it is
     public boolean isTimerComplete() {
         return timerComplete;
-    }
-
-    public boolean isTimerRunning() {
-        return timer.isRunning();
     }
 
     public boolean isTimerCancelled() {
         return timerCancelled;
     }
 
+    public boolean isTimerRunning() {
+        return timer.isRunning();
+    }
 
     public int getMinutesRemaining() {
         return minutesRemaining;
@@ -101,5 +105,4 @@ public class TimerSession {
     public int getSecondsRemaining() {
         return secondsRemaining;
     }
-
 }

@@ -3,17 +3,14 @@ package model;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.concurrent.CountDownLatch;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TestTimerSession {
     TimerSession testTimerSession;
-    CountDownLatch testLatch;
 
     @BeforeEach
     void startUp() {
-        testLatch = new CountDownLatch(1);
-        testTimerSession = new TimerSession(30, testLatch);
+        testTimerSession = new TimerSession(30);
     }
 
     @Test
@@ -55,7 +52,6 @@ public class TestTimerSession {
 
     @Test
     void testCalculateCompletedMinutes() throws InterruptedException {
-        testTimerSession.calculateCompletedMinutes();
         assertEquals(0, testTimerSession.calculateCompletedMinutes());
         testTimerSession.startTimer();
         Thread.sleep(2000);
@@ -68,7 +64,6 @@ public class TestTimerSession {
     void testTimerComplete() throws InterruptedException {
         // 30 min, 0 sec
         assertFalse(testTimerSession.isTimerComplete());
-        assertEquals(1, testLatch.getCount());
         testTimerSession.fastForwardTimer(28, 0);
         testTimerSession.startTimer();
         Thread.sleep(1100);
@@ -83,7 +78,6 @@ public class TestTimerSession {
         Thread.sleep(1100);
         // 0 min, 0 sec
         assertTrue(testTimerSession.isTimerComplete());
-        assertEquals(0, testLatch.getCount());
     }
 
 
