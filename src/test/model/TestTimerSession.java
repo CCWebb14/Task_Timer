@@ -14,7 +14,7 @@ public class TestTimerSession {
     }
 
     @Test
-    void testStartTimer() {
+    void testStartTimer() throws InterruptedException {
         assertFalse(testTimerSession.isTimerRunning());
         testTimerSession.startTimer();
         assertTrue(testTimerSession.isTimerRunning());
@@ -80,6 +80,17 @@ public class TestTimerSession {
         assertTrue(testTimerSession.isTimerComplete());
     }
 
+    @Test
+    void testAwaitTimer() throws InterruptedException {
+        testTimerSession.startTimer();
+        Thread.sleep(1200);
+        // 29 min, 59 sec
+        testTimerSession.fastForwardTimer(29, 58);
+        // 1 second remaining
+        assertFalse(testTimerSession.isTimerComplete());
+        testTimerSession.awaitTimer();
+        assertTrue(testTimerSession.isTimerComplete());
+    }
 
     @Test
     void testCancelTimer() {

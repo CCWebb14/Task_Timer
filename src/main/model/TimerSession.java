@@ -53,6 +53,7 @@ public class TimerSession {
         timer.stop();
     }
 
+    // REQUIRES: Timer has been started
     // EFFECTS: Awaits the countdown of the latch
     // Throws an InterruptedException if the thread is interrupted while waiting
     public void awaitTimer() throws InterruptedException {
