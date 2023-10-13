@@ -14,7 +14,7 @@ public class TestTimerSession {
     }
 
     @Test
-    void testStartTimer() throws InterruptedException {
+    void testStartTimer() {
         assertFalse(testTimerSession.isTimerRunning());
         testTimerSession.startTimer();
         assertTrue(testTimerSession.isTimerRunning());
