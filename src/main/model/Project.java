@@ -8,6 +8,7 @@ public class Project {
     private String name;
     private List<Task> tasks;
 
+    // EFFECTS: constructs a project with a name and an empty list of tasks
     public Project(String name) {
         this.name = name;
         this.tasks = new ArrayList<>();

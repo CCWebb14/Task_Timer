@@ -14,7 +14,8 @@ public class Task {
     private int totalMinutes;
     private Dictionary<LocalDate, Integer> historyDict;
 
-    // Default constructor
+    // EFFECTS: Constructs a task with a given name, a dictionary that holds dates:minutes
+    // and default durations of work and break minutes
     public Task(String name) {
         this.name = name;
         this.workDurationMinutes = 25;
@@ -24,7 +25,8 @@ public class Task {
         this.historyDict = new Hashtable<>();
     }
 
-    // Constructor that specifies work and break duration
+    // EFFECTS: Constructs a task with a given name and work/break durations,
+    // and a dictionary that holds dates:minutes
     public Task(String name, int workDurationMinutes, int breakDurationMinutes, int longBreakDurationMinutes) {
         this.name = name;
         this.workDurationMinutes = workDurationMinutes;

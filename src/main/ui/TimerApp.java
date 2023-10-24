@@ -17,6 +17,8 @@ public class TimerApp {
     int taskNum;
     TimerSession currentTimer;
 
+    // EFFECTS: constructs the TimerApp
+    // Runs app
     public TimerApp() {
         runApp();
     }

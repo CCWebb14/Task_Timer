@@ -15,6 +15,9 @@ public class TimerSession {
     private Boolean timerCancelled;
     private Boolean timerComplete;
 
+    // EFFECTS: constructs a timersession with the given duration,
+    // Instantiates a new latch and initializes the timerCancelled and timerComplete boolean values
+    // Instantiates a timer that triggers a second countdown every 1s
     public TimerSession(int minutes) {
         this.timerDurationMinutes = minutes;
         this.minutesRemaining = minutes;
@@ -95,6 +98,8 @@ public class TimerSession {
         return timerCancelled;
     }
 
+    // EFFECTS: Returns a boolean value on the state of the timer
+    // Returns True if the timer is running, false otherwise
     public boolean isTimerRunning() {
         return timer.isRunning();
     }
