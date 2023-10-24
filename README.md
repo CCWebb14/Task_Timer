@@ -16,10 +16,13 @@ The Pomodoro Technique was developed by Francesco Cirillo and it is a time manag
 
 ## User Stories
 
+### Phase I:
 - As a user, I want to be able to name and create a new task (ex. CPSC210) and add it to a project (ex. School)
 - As a user, I want to be able to start, pause and complete a 25 minute timer, followed by a 5 minute break for a selected task. If 4 cycles have been completed, I want the option to start a long break.
-- As a user, I want the option to add tags to each individual timer session, ex. (Term project, midterm1, final), to further specify time spent within a task.
 - As a user I want to be able to abruptly end a work timer and still have time recorded
 - As a user, I want to be able to modify the default timer durations. For example 25 min -> 40 min of focused work, and 5 min -> 10 min for breaks.
 - As a user, I want to be able to view a list of all of my current tasks and time spent on each
-- As a user, I want to see a visual breakdown of my tasks, such as pie charts (breakdown of individual project time) and bar graphs (x-axis date, y-axis time spent) 
+
+### Phase II:
+- As a user, when I select the quit option from the main menu, I want the option to save the data associated to my project (tasks, recorded time) to a file.
+- As a user, when I start the application, I want to be given the option to load a project and it's associated data from a file.
