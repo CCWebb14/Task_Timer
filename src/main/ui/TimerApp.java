@@ -3,19 +3,28 @@ package ui;
 import model.Project;
 import model.Task;
 import model.TimerSession;
+import persistence.*;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 
+// Code influenced by JsonSerializationDemo: https://github.students.cs.ubc.ca/CPSC210/JsonSerializationDemo
+// Code influenced by TellerApp: https://github.students.cs.ubc.ca/CPSC210/TellerApp
+
 // Project timer application
 public class TimerApp {
-    Project project;
-    Scanner keyboard;
-    int intInput;
-    int taskNum;
-    TimerSession currentTimer;
+    private static final String JSON_STORE = "./data/project.json";
+    private Project project;
+    private Scanner keyboard;
+    private int intInput;
+    private int taskNum;
+    private TimerSession currentTimer;
+    private JsonWriter jsonWriter;
+    private JsonReader jsonReader;
 
     // EFFECTS: constructs the TimerApp
     // Runs app
@@ -36,23 +45,8 @@ public class TimerApp {
     private void init() {
         project = new Project("School");
         keyboard = new Scanner(System.in);
-
-        // For demonstration purposes
-        Task cpsc210 = new Task("CPSC210", 1, 1, 1);
-        Task cpsc121 = new Task("CPSC121", 2, 2, 2);
-        Task phil220 = new Task("PHIL220", 3, 3, 3);
-        Task dsci100 = new Task("DSCI100", 4, 4, 4);
-        Task cpsc213 = new Task("CPSC213", 5, 5, 5);
-        Task cpsc221 = new Task("CPSC221", 6, 6, 6);
-        cpsc121.recordTime(LocalDate.now(), 5);
-        phil220.recordTime(LocalDate.now(), 10);
-        dsci100.recordTime(LocalDate.now(), 15);
-        project.addTask(cpsc210);
-        project.addTask(cpsc121);
-        project.addTask(phil220);
-        project.addTask(dsci100);
-        project.addTask(cpsc213);
-        project.addTask(cpsc221);
+        jsonWriter = new JsonWriter(JSON_STORE);
+        jsonReader = new JsonReader(JSON_STORE);
     }
 
     // MODIFIES: this
@@ -60,7 +54,7 @@ public class TimerApp {
     // Can call listTasksMenu and createTaskMenu
     private void mainMenu() {
         while (true) {
-            System.out.println("[1] Timer [2] Task Breakdown [3] Add New Task [4] Quit");
+            System.out.println("[1] Timer [2] Task breakdown [3] Add new Task [4] Load data from file [5] Quit");
             intInput = handleIntInput();
             if (intInput == 1) {
                 listTasksMenu();
@@ -69,10 +63,49 @@ public class TimerApp {
             } else if (intInput == 3) {
                 createTaskMenu();
             } else if (intInput == 4) {
+                loadProject();
+            } else if (intInput == 5) {
+                saveProjectQuery();
                 break;
             } else {
                 System.out.println("Invalid number. Please enter a number 1-4.");
             }
+        }
+    }
+
+    // EFFECTS: Asks the user if they would like to save the data to a file
+    private void saveProjectQuery() {
+        System.out.println("Would you like to save the project to a file? [1] Yes [2] No");
+        intInput = handleIntInput();
+        if (intInput == 1) {
+            saveProject();
+        } else if (intInput == 2) {
+            System.out.println("Continuing without saving...");
+        } else {
+            System.out.println("Invalid number. Please enter a number 1-2.");
+        }
+    }
+
+    // EFFECTS: saves the project to a file
+    private void saveProject() {
+        try {
+            jsonWriter.open();
+            jsonWriter.write(project);
+            jsonWriter.close();
+            System.out.println("Saved project " + project.getName() + " to " + JSON_STORE);
+        } catch (FileNotFoundException e) {
+            System.out.println("Unable to write to file: " + JSON_STORE);
+        }
+    }
+
+    // MODIFIES: this
+    // EFFECTS: loads project from a file
+    private void loadProject() {
+        try {
+            project = jsonReader.read();
+            System.out.println("Loaded project " + project.getName() + " from " + JSON_STORE);
+        } catch (IOException e) {
+            System.out.println("Unable to read from file: " + JSON_STORE);
         }
     }
 

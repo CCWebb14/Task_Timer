@@ -1,0 +1,78 @@
+{
+  "project_name": "testProject",
+  "tasks": [
+    {
+      "task_name": "CPSC210",
+      "historyMap": [],
+      "workDurationMinutes": 1,
+      "totalMinutes": 0,
+      "breakDurationMinutes": 2,
+      "longBreakDurationMinutes": 3
+    },
+    {
+      "task_name": "CPSC121",
+      "historyMap": [
+        {
+          "date": "2023-10-23",
+          "minutes_completed": 5
+        },
+        {
+          "date": "2023-10-22",
+          "minutes_completed": 10
+        },
+        {
+          "date": "2023-10-19",
+          "minutes_completed": 100
+        }
+      ],
+      "workDurationMinutes": 2,
+      "totalMinutes": 115,
+      "breakDurationMinutes": 2,
+      "longBreakDurationMinutes": 2
+    },
+    {
+      "task_name": "PHIL220",
+      "historyMap": [
+        {
+          "date": "2023-10-24",
+          "minutes_completed": 10
+        },
+        {
+          "date": "2023-10-23",
+          "minutes_completed": 25
+        }
+      ],
+      "workDurationMinutes": 3,
+      "totalMinutes": 35,
+      "breakDurationMinutes": 3,
+      "longBreakDurationMinutes": 3
+    },
+    {
+      "task_name": "DSCI100",
+      "historyMap": [{
+        "date": "2023-10-24",
+        "minutes_completed": 15
+      }],
+      "workDurationMinutes": 4,
+      "totalMinutes": 15,
+      "breakDurationMinutes": 4,
+      "longBreakDurationMinutes": 4
+    },
+    {
+      "task_name": "CPSC213",
+      "historyMap": [],
+      "workDurationMinutes": 5,
+      "totalMinutes": 0,
+      "breakDurationMinutes": 5,
+      "longBreakDurationMinutes": 5
+    },
+    {
+      "task_name": "CPSC221",
+      "historyMap": [],
+      "workDurationMinutes": 6,
+      "totalMinutes": 0,
+      "breakDurationMinutes": 6,
+      "longBreakDurationMinutes": 6
+    }
+  ]
+}

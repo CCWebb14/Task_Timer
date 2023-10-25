@@ -1,10 +1,14 @@
 package model;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+import persistence.Writable;
+
 import java.util.ArrayList;
 import java.util.List;
 
 // Represents a project, a project can hold multiple tasks
-public class Project {
+public class Project implements Writable {
     private String name;
     private List<Task> tasks;
 
@@ -38,6 +42,10 @@ public class Project {
         return totalMinutes;
     }
 
+    public String getName() {
+        return name;
+    }
+
     public List<Task> getTaskList() {
         return tasks;
     }
@@ -59,5 +67,25 @@ public class Project {
             result += "(" + curTask.getName() + ") " + curTask.getTotalMinutes() + " min ";
         }
         return result;
+    }
+
+    // EFFECTS: Generates and returns a json object that represents the project
+    @Override
+    public JSONObject toJson() {
+        JSONObject json = new JSONObject();
+        json.put("project_name", name);
+        json.put("tasks", tasksToJson());
+        return json;
+    }
+
+    // EFFECTS: Iterates each task in tasks and generates a JSON array
+    private JSONArray tasksToJson() {
+        JSONArray jsonArray = new JSONArray();
+
+        for (Task t : tasks) {
+            jsonArray.put(t.toJson());
+        }
+
+        return jsonArray;
     }
 }

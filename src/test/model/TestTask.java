@@ -4,7 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
-import java.util.Dictionary;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -12,7 +12,7 @@ public class TestTask {
     private Task testTask;
     private LocalDate testDate1;
     private LocalDate testDate2;
-    private Dictionary<LocalDate, Integer> testDict;
+    private Map<LocalDate, Integer> testMap;
 
     @BeforeEach
     private void runBefore() {
@@ -23,11 +23,11 @@ public class TestTask {
 
     @Test
     void testRecordTimeFirstEntry() {
-        assertEquals(0, testTask.getHistoryDict().size());
+        assertEquals(0, testTask.getHistoryMap().size());
         testTask.recordTime(testDate1, 1);
-        testDict = testTask.getHistoryDict();
-        assertEquals(1, testDict.size());
-        assertEquals(1, testDict.get(testDate1));
+        testMap = testTask.getHistoryMap();
+        assertEquals(1, testMap.size());
+        assertEquals(1, testMap.get(testDate1));
     }
 
     @Test
@@ -47,11 +47,11 @@ public class TestTask {
     void testRecordTimeMultipleEntries() {
         testTask.recordTime(testDate1, 1);
         testTask.recordTime(testDate2, 5);
-        testDict = testTask.getHistoryDict();
-        assertEquals(2, testDict.size());
+        testMap = testTask.getHistoryMap();
+        assertEquals(2, testMap.size());
         assertEquals(6, testTask.getTotalMinutes());
-        assertEquals(1, testDict.get(testDate1));
-        assertEquals(5, testDict.get(testDate2));
+        assertEquals(1, testMap.get(testDate1));
+        assertEquals(5, testMap.get(testDate2));
 
     }
 
@@ -61,10 +61,10 @@ public class TestTask {
         testTask.recordTime(testDate2, 5);
         testTask.recordTime(testDate2, 10);
         testTask.recordTime(testDate2, 14);
-        testDict = testTask.getHistoryDict();
-        assertEquals(2, testDict.size());
+        testMap = testTask.getHistoryMap();
+        assertEquals(2, testMap.size());
         assertEquals(30, testTask.getTotalMinutes());
-        assertEquals(1, testDict.get(testDate1));
-        assertEquals(29, testDict.get(testDate2));
+        assertEquals(1, testMap.get(testDate1));
+        assertEquals(29, testMap.get(testDate2));
     }
 }

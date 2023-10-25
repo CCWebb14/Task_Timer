@@ -31,6 +31,14 @@ public class TestProject {
     }
 
     @Test
+    void testConstructor() {
+        taskList = testProject.getTaskList();
+        assertEquals("testProject", testProject.getName());
+        assertEquals(0, testProject.calculateTotalMinutes());
+        assertEquals(0, taskList.size());
+    }
+
+    @Test
     void testAddTask() {
         assertTrue(testProject.addTask(testTask1));
         taskList = testProject.getTaskList();
@@ -81,5 +89,4 @@ public class TestProject {
         String expectedString = "(Task1) 25 min (Task2) 50 min ";
         assertEquals(expectedString, testProject.generateAllTaskMinutes());
     }
-
 }
