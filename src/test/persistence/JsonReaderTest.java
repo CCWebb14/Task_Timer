@@ -47,7 +47,7 @@ class JsonReaderTest {
     }
 
     @Test
-    void testReaderGeneralWorkProject() {
+    void testReaderGeneralProject() {
         JsonReader reader = new JsonReader("./data/testReaderGeneralProject.json");
         try {
             project = reader.read();
@@ -61,11 +61,13 @@ class JsonReaderTest {
             assertEquals(2, firstTask.getBreakDurationMinutes());
             assertEquals(3, firstTask.getLongBreakDurationMinutes());
             assertEquals(0, firstTask.getTotalMinutes());
+            assertEquals(0, firstTask.getHistoryMap().size());
 
             Task secondTask = taskList.get(1);
             assertEquals(115, secondTask.getTotalMinutes());
-            int minutesLoggedYesterday = secondTask.getHistoryMap().get(LocalDate.now().minusDays(1));
-            assertEquals(5, minutesLoggedYesterday);
+            assertEquals(3, secondTask.getHistoryMap().size());
+            int minutesLoggedOnDate = secondTask.getHistoryMap().get(LocalDate.of(2023, 10, 23));
+            assertEquals(5, minutesLoggedOnDate);
         } catch (IOException e) {
             fail("Couldn't read from file");
         }
