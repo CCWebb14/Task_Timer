@@ -7,7 +7,6 @@ import persistence.JsonWriter;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.image.BufferedImage;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
@@ -15,11 +14,13 @@ import java.util.List;
 // Code influenced by the links below:
 // https://github.students.cs.ubc.ca/CPSC210/AlarmSystem
 // https://docs.oracle.com/javase/tutorial/uiswing/components/tabbedpane.html
+// https://docs.oracle.com/javase/tutorial/uiswing/components/icon.html
 
 // Clock icon taken from https://icons8.com
 
 public class TimerGUI extends JFrame {
     private static final String JSON_STORE = "./data/project.json";
+    private static final String IMAGE_PATH = "icons8-clock-100.png";
     private static final String MAIN_MENU_TITLE = "Main Menu";
     private static final String PROJECT_BREAKDOWN_TITLE = "Project Breakdown";
     private static final String CREATE_TASK_PANEL_TITLE = "Create Task";
@@ -28,7 +29,6 @@ public class TimerGUI extends JFrame {
     private static final String TIMER_PANEL_TITLE = "Timer";
     private static final int extraWindowWidth = 100;
     private static final Dimension FIELD_DIMENSION = new Dimension(75, 30);
-    private static final ImageIcon icon = new ImageIcon("/icons8-clock-100.png");
 
     private Project project;
     static JFrame frame;
@@ -42,6 +42,7 @@ public class TimerGUI extends JFrame {
     private JPanel taskBreakdownCard;
     private ClockComponent timerCard;
     private Task curTask;
+    private ImageIcon icon;
 
     public TimerGUI() {
         SwingUtilities.invokeLater(() -> {
@@ -65,6 +66,7 @@ public class TimerGUI extends JFrame {
         project = new Project("School");
         jsonWriter = new JsonWriter(JSON_STORE);
         jsonReader = new JsonReader(JSON_STORE);
+        icon = createImageIcon(IMAGE_PATH, "timer icon");
     }
 
     private void addComponentToPane(Container pane) {
@@ -101,6 +103,7 @@ public class TimerGUI extends JFrame {
 
     private void renderMainMenuCard() {
         mainMenuCard.removeAll();
+        JLabel timerIcon = new JLabel(icon);
         JLabel message = new JLabel("");
         JButton loadDataButton = new JButton("Load Data");
         loadDataButton.addActionListener((e) -> {
@@ -114,6 +117,7 @@ public class TimerGUI extends JFrame {
             message.setText(saveProject());
         });
         message.setForeground(Color.blue);
+        mainMenuCard.add(timerIcon);
         mainMenuCard.add(loadDataButton);
         mainMenuCard.add(saveDataButton);
         mainMenuCard.add(new JButton("Quit"));
@@ -134,7 +138,6 @@ public class TimerGUI extends JFrame {
         JTextField longBreakDurationField = new JTextField("15");
         JLabel nameLabel = new JLabel("Unique name:");
         JTextField nameField = new JTextField();
-        //        JButton submitButton = new JButton("Submit");
         JButton submitButton = new JButton("Submit");
         submitButton.addActionListener((e) -> {
             project.addTask(new Task(nameField.getText(), Integer.parseInt(workDurationField.getText()),
@@ -212,5 +215,16 @@ public class TimerGUI extends JFrame {
 
     private void initializeTimerCard() {
         timerCard = new ClockComponent();
+    }
+
+    /** Returns an ImageIcon, or null if the path was invalid. */
+    private ImageIcon createImageIcon(String path, String description) {
+        java.net.URL imgURL = getClass().getResource(path);
+        if (imgURL != null) {
+            return new ImageIcon(imgURL, description);
+        } else {
+            System.err.println("Couldn't find file: " + path);
+            return null;
+        }
     }
 }
