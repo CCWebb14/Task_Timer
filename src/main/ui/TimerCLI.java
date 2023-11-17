@@ -16,7 +16,7 @@ import java.util.Scanner;
 // Code influenced by TellerApp: https://github.students.cs.ubc.ca/CPSC210/TellerApp
 
 // Project timer application
-public class TimerApp {
+public class TimerCLI {
     private static final String JSON_STORE = "./data/project.json";
     private Project project;
     private Scanner keyboard;
@@ -26,9 +26,9 @@ public class TimerApp {
     private JsonWriter jsonWriter;
     private JsonReader jsonReader;
 
-    // EFFECTS: constructs the TimerApp
+    // EFFECTS: constructs the TimerCLI
     // Runs app
-    public TimerApp() {
+    public TimerCLI() {
         runApp();
     }
 

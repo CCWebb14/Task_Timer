@@ -23,7 +23,7 @@ public class Project implements Writable {
     // only if the task has a unique name
     public boolean addTask(Task task) {
         for (int i = 0; i < tasks.size(); i++) {
-            if (tasks.get(i).getName() == task.getName()) {
+            if (tasks.get(i).getName().equals(task.getName())) {
                 return false;
             }
         }
@@ -56,6 +56,17 @@ public class Project implements Writable {
         return tasks.get(index);
     }
 
+    public Task getTaskFromString(String query) {
+        Task curTask = null;
+        for (int i = 0; i < tasks.size(); i++) {
+            curTask = tasks.get(i);
+            if (query.equals(curTask.getName())) {
+                return curTask;
+            }
+        }
+        return curTask;
+    }
+
     // EFFECTS: Creates a string of all tasks and their total minutes
     public String generateAllTaskMinutes() {
         if (tasks.size() == 0) {
@@ -65,6 +76,14 @@ public class Project implements Writable {
         for (int i = 0; i < tasks.size(); i++) {
             Task curTask = tasks.get(i);
             result += "(" + curTask.getName() + ") " + curTask.getTotalMinutes() + " min ";
+        }
+        return result;
+    }
+
+    public List<String> tasksToStringList() {
+        List<String> result = new ArrayList<>();
+        for (int i = 0; i < tasks.size(); i++) {
+            result.add(tasks.get(i).getName());
         }
         return result;
     }

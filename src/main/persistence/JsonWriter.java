@@ -8,7 +8,7 @@ import java.io.*;
 
 // Code influenced by JsonSerializationDemo: https://github.students.cs.ubc.ca/CPSC210/JsonSerializationDemo
 
-// Represents a writer that writes JSON representation of workroom to file
+// Represents a writer that writes JSON representation of project to file
 public class JsonWriter {
     private static final int TAB = 4;
     private PrintWriter writer;

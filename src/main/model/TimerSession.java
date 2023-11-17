@@ -1,5 +1,7 @@
 package model;
 
+import ui.TimerEventListener;
+
 import javax.swing.Timer;
 import java.util.concurrent.CountDownLatch;
 
@@ -10,38 +12,64 @@ public class TimerSession {
     private int timerDurationMinutes;
     private int minutesRemaining;
     private int secondsRemaining;
+    private int secondsCompleted;
     private Timer timer;
     private CountDownLatch latch;
     private Boolean timerCancelled;
     private Boolean timerComplete;
+    private TimerEventListener listener;
 
-    // EFFECTS: constructs a timersession with the given duration,
+    // EFFECTS: constructs a timerSession with the given duration,
     // Instantiates a new latch and initializes the timerCancelled and timerComplete boolean values
     // Instantiates a timer that triggers a second countdown every 1s
     public TimerSession(int minutes) {
         this.timerDurationMinutes = minutes;
         this.minutesRemaining = minutes;
         this.secondsRemaining = 0;
+        this.secondsCompleted = 0;
         this.timerCancelled = false;
         this.timerComplete = false;
         this.latch = new CountDownLatch(1);
-
         // Triggers event every 1s
         // if timer is running
         // Once complete, the latch is counted down in order to notify main thread
         this.timer = new Timer(1000, e -> {
-            if (secondsRemaining > 1) {
+            secondsCompleted++;
+            if (secondsRemaining >= 1) {
                 secondsRemaining--;
-            } else if (minutesRemaining <= 0) {
-                secondsRemaining--;
-                timer.stop();
-                timerComplete = true;
-                this.latch.countDown();
+                if (secondsRemaining <= 0 && minutesRemaining <= 0) {
+                    timer.stop();
+                    timerComplete = true;
+                    this.latch.countDown();
+                }
             } else {
                 minutesRemaining--;
                 secondsRemaining = 59;
             }
+            if (listener != null) {
+                updateListener();
+            }
         });
+    }
+
+    // TODO: add doc
+    public void setListener(TimerEventListener listener) {
+        this.listener = listener;
+        listener.updateClock(minutesRemaining + ":0" + secondsRemaining, secondsCompleted, timerComplete);
+    }
+
+    // TODO: add doc
+    public void removeListener() {
+        this.listener = null;
+    }
+
+    // TODO: add doc
+    public void updateListener() {
+        if (secondsRemaining >= 10) {
+            listener.updateClock(minutesRemaining + ":" + secondsRemaining, secondsCompleted, timerComplete);
+        } else {
+            listener.updateClock(minutesRemaining + ":0" + secondsRemaining, secondsCompleted, timerComplete);
+        }
     }
 
     // MODIFIES: this
