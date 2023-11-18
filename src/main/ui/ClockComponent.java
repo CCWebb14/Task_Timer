@@ -12,8 +12,10 @@ public class ClockComponent extends JPanel implements TimerEventListener {
     private static final String START_LABEL = "Start";
     private static final String PAUSE_LABEL = "Pause";
     private static final String CANCEL_LABEL = "Cancel";
+    private static final Dimension BUTTON_SIZE = new Dimension(100, 30);
 
     private JLabel label;
+    private JPanel utilityPanel;
     private JButton timerButton;
     private JButton cancelButton;
     private JProgressBar progressBar;
@@ -23,7 +25,10 @@ public class ClockComponent extends JPanel implements TimerEventListener {
     private int completedWorkTimers;
     private String curState;
 
-    public ClockComponent() {
+    private TimerGUI listener;
+
+    public ClockComponent(TimerGUI listener) {
+        this.listener = listener;
         initializeAndRenderLabel();
     }
 
@@ -53,22 +58,26 @@ public class ClockComponent extends JPanel implements TimerEventListener {
         this.completedWorkTimers = 0;
         this.removeAll();
         label = new JLabel();
-        cancelButton = new JButton();
+        utilityPanel = new JPanel();
         timerButton = new JButton();
+        cancelButton = new JButton();
+        utilityPanel.add(timerButton);
+        utilityPanel.add(cancelButton);
         progressBar = new JProgressBar(0, 0, 0);
         progressBar.setStringPainted(true);
         renderBasedOnState();
-        centerComponents();
+        setDimensionsAndAlignment();
         add(label);
-        add(cancelButton);
-        add(timerButton);
+        add(utilityPanel);
         add(progressBar);
     }
 
-    private void centerComponents() {
+    private void setDimensionsAndAlignment() {
         label.setAlignmentX(Component.CENTER_ALIGNMENT);
-        cancelButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        timerButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        cancelButton.setPreferredSize(BUTTON_SIZE);
+        timerButton.setPreferredSize(BUTTON_SIZE);
+        utilityPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        utilityPanel.setMaximumSize(new Dimension(300, 50));
         progressBar.setAlignmentX(Component.CENTER_ALIGNMENT);
     }
 
@@ -90,7 +99,8 @@ public class ClockComponent extends JPanel implements TimerEventListener {
         removeActionListeners(cancelButton);
         cancelButton.addActionListener((e) -> {
             timerSession.cancelTimer();
-            curTask.recordTime(LocalDate.now(), timerSession.calculateCompletedMinutes());
+            recordMinutes();
+            triggerListenerReRender();
             resetState();
             renderBasedOnState();
         });
@@ -137,8 +147,7 @@ public class ClockComponent extends JPanel implements TimerEventListener {
     }
 
     private void recordMinutesChangeToBreak() {
-        int completedMinutes = timerSession.calculateCompletedMinutes();
-        curTask.recordTime(LocalDate.now(), completedMinutes);
+        recordMinutes();
         completedWorkTimers++;
 
         if (completedWorkTimers >= 3) {
@@ -147,6 +156,11 @@ public class ClockComponent extends JPanel implements TimerEventListener {
         } else {
             curState = "Break";
         }
+    }
+
+    private void recordMinutes() {
+        int completedMinutes = timerSession.calculateCompletedMinutes();
+        curTask.recordTime(LocalDate.now(), completedMinutes);
     }
 
     private void renderStartButton() {
@@ -167,9 +181,10 @@ public class ClockComponent extends JPanel implements TimerEventListener {
         });
     }
 
-    public void triggerReRender() {
+
+    public void triggerListenerReRender() {
         // TODO: rerender components of timerGUI when timer is cancelled or completed
-        // Updates values on breakdown and so forth
+        listener.renderStatisticsCard();
     }
 
 
@@ -179,6 +194,7 @@ public class ClockComponent extends JPanel implements TimerEventListener {
         progressBar.setValue(secondsCompleted);
         if (timerComplete) {
             calculateAndDetermineState();
+            triggerListenerReRender();
             renderBasedOnState();
         }
     }

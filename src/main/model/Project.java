@@ -88,6 +88,19 @@ public class Project implements Writable {
         return result;
     }
 
+    public Task determineMostWorkedOnTask() {
+        if (tasks.size() == 0) {
+            return null;
+        }
+        Task mostWorkedOnTask = tasks.get(0);
+        for (Task task : tasks) {
+            if (task.getTotalMinutes() > mostWorkedOnTask.getTotalMinutes()) {
+                mostWorkedOnTask = task;
+            }
+        }
+        return mostWorkedOnTask;
+    }
+
     // EFFECTS: Generates and returns a json object that represents the project
     @Override
     public JSONObject toJson() {
