@@ -36,6 +36,8 @@ public class TestProject {
         assertEquals("testProject", testProject.getName());
         assertEquals(0, testProject.calculateTotalMinutes());
         assertEquals(0, taskList.size());
+        assertNull(testProject.determineMostWorkedOnTask());
+        assertNull(testProject.getTaskFromString("Task1"));
     }
 
     @Test
@@ -63,6 +65,18 @@ public class TestProject {
         assertEquals(2, taskList.size());
         assertEquals(testTask1, taskList.get(0));
         assertEquals(testTask2, taskList.get(1));
+        assertEquals(testTask2, testProject.determineMostWorkedOnTask());
+        List<String> testStringList = testProject.tasksToStringList();
+        assertEquals(2, testStringList.size());
+        assertEquals("Task1", testStringList.get(0));
+        assertEquals("Task2", testStringList.get(1));
+    }
+
+    @Test
+    void testGetTaskFromString() {
+        testProject.addTask(testTask1);
+        testProject.addTask(testTask2);
+        assertEquals(testTask1, testProject.getTaskFromString("Task1"));
     }
 
     @Test

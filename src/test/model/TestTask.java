@@ -15,7 +15,7 @@ public class TestTask {
     private Map<LocalDate, Integer> testMap;
 
     @BeforeEach
-    private void runBefore() {
+    private void startUp() {
         testTask = new Task("testTask", 1, 2, 3);
         testDate1 = LocalDate.of(2000, 01, 01);
         testDate2 = LocalDate.of(2000, 01, 02);

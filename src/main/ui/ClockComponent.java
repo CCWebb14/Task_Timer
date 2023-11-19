@@ -1,7 +1,6 @@
 package ui;
 
 import model.Task;
-import model.TimerSession;
 
 import javax.swing.*;
 import java.awt.*;

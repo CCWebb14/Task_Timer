@@ -2,7 +2,6 @@ package ui;
 
 import model.Project;
 import model.Task;
-import model.TimerSession;
 import persistence.*;
 
 import java.io.FileNotFoundException;
