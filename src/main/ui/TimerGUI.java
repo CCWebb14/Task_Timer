@@ -19,6 +19,7 @@ import java.util.List;
 
 // Clock icon taken from https://icons8.com
 
+// task timer gui application
 public class TimerGUI extends JFrame {
     private static final String JSON_STORE = "./data/project.json";
     private static final String IMAGE_PATH = "icons8-clock-100.png";
@@ -28,11 +29,10 @@ public class TimerGUI extends JFrame {
     private static final String CREATE_TASK_PANEL_TITLE = "Create Task";
     private static final String SELECT_TASK_PANEL_TITLE = "Select Task";
     private static final String TIMER_PANEL_TITLE = "Timer";
-    private static final int extraWindowWidth = 100;
     private static final Dimension FIELD_DIMENSION = new Dimension(75, 30);
 
     private Project project;
-    static JFrame frame;
+    private JFrame frame;
     private JsonWriter jsonWriter;
     private JsonReader jsonReader;
 
@@ -40,84 +40,144 @@ public class TimerGUI extends JFrame {
     private JPanel statisticsCard;
     private JPanel createTaskCard;
     private JPanel selectTaskCard;
+    private JPanel editTaskPanel;
     private ClockComponent timerCard;
+
+
     private Task curTask;
     private ImageIcon icon;
 
-    private JPanel workPanel;
-    private JPanel breakPanel;
-    private JPanel longBreakPanel;
-
+    // EFFECTS: constructs the TimerGUI and runs app
     public TimerGUI() {
-        SwingUtilities.invokeLater(() -> {
-            runApp();
-        });
+        SwingUtilities.invokeLater(this::runApp);
     }
 
+    // MODIFIES: this
+    // EFFECTS: creates and displays the main JFrame
     private void runApp() {
         init();
         frame = new JFrame();
         setDefaultTitle();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        addComponentToPane(frame);
+        addComponentsToFrame();
         frame.pack();
         frame.setSize(500, 250);
         frame.setVisible(true);
     }
 
+    // MODIFIES: this
+    // EFFECTS: Sets title of main JFrame to given string
     private void setDefaultTitle() {
         frame.setTitle(J_FRAME_NAME);
     }
 
     // MODIFIES: this
-    // EFFECTS: initializes project, jsonWriter and jsonReader
+    // EFFECTS: initializes project, jsonWriter, jsonReader and icon
     private void init() {
         project = new Project("School");
         jsonWriter = new JsonWriter(JSON_STORE);
         jsonReader = new JsonReader(JSON_STORE);
-        icon = createImageIcon(IMAGE_PATH, "timer icon");
+        icon = createImageIcon();
     }
 
-    private void addComponentToPane(Container pane) {
+    // EFFECTS: Returns an ImageIcon if the path is valid,
+    // Otherwise returns null
+    private ImageIcon createImageIcon() {
+        java.net.URL imgURL = getClass().getResource(IMAGE_PATH);
+        if (imgURL != null) {
+            return new ImageIcon(imgURL, "timer icon");
+        } else {
+            return null;
+        }
+    }
+
+    // MODIFIES: this
+    // EFFECTS: Adds cards to associated tabs, adds the tabbed pane to the main JFrame
+    // Sets layouts of cards
+    private void addComponentsToFrame() {
         JTabbedPane tabbedPane = new JTabbedPane();
-        initializePanels();
+        initializeCards();
         tabbedPane.addTab(MAIN_MENU_TITLE, mainMenuCard);
         tabbedPane.addTab(STATISTICS_TITLE, statisticsCard);
-        tabbedPane.addTab(CREATE_TASK_PANEL_TITLE, createTaskCard);
-        tabbedPane.addTab(SELECT_TASK_PANEL_TITLE, selectTaskCard);
         statisticsCard.setLayout(new BoxLayout(statisticsCard, BoxLayout.Y_AXIS));
+        tabbedPane.addTab(CREATE_TASK_PANEL_TITLE, createTaskCard);
+        createTaskCard.setLayout(new BoxLayout(createTaskCard, BoxLayout.Y_AXIS));
+        createTaskCard.add(Box.createVerticalStrut(500));
+        tabbedPane.addTab(SELECT_TASK_PANEL_TITLE, selectTaskCard);
         timerCard.setLayout(new BoxLayout(timerCard, BoxLayout.Y_AXIS));
         tabbedPane.addTab(TIMER_PANEL_TITLE, timerCard);
-        pane.add(tabbedPane);
+        frame.add(tabbedPane);
     }
 
-    private void initializePanels() {
+    // EFFECTS: Calls the initialization method for all cards to be added to tabs
+    private void initializeCards() {
         initializeMainMenuCard();
         initializeStatisticsCard();
         initializeCreateTaskCard();
         initializeSelectTaskCard();
         initializeTimerCard();
-        initializeEditTaskPanels();
     }
 
-    private void initializeEditTaskPanels() {
-        workPanel = new JPanel();
-        breakPanel = new JPanel();
-        longBreakPanel = new JPanel();
+    // MODIFIES: this
+    // EFFECTS: Initializes the main menu card and calls its render method
+    private void initializeMainMenuCard() {
+        mainMenuCard = new JPanel();
+        renderMainMenuCard();
     }
 
+    // REQUIRES: mainMenuCard has been initialized
+    // MODIFIES: this
+    // EFFECTS: Initializes and adds all components and action listeners to the main menu card
+    private void renderMainMenuCard() {
+        mainMenuCard.removeAll();
+        JLabel timerIcon = new JLabel(icon);
+        JLabel message = new JLabel("");
+        JButton loadDataButton = new JButton("Load Data");
+        loadDataButton.addActionListener((e) -> {
+            message.setText(loadProject());
+            loadEffects();
+        });
+        JButton saveDataButton = new JButton("Save Data");
+        saveDataButton.addActionListener((e) -> message.setText(saveProject()));
+        JButton quitButton = new JButton("Quit");
+        quitButton.addActionListener((e) -> System.exit(0));
+        message.setForeground(Color.blue);
+        mainMenuCard.add(timerIcon);
+        mainMenuCard.add(loadDataButton);
+        mainMenuCard.add(saveDataButton);
+        mainMenuCard.add(quitButton);
+        mainMenuCard.add(message);
+    }
+
+    // MODIFIES: this
+    // EFFECTS: triggers re-renders of desired components when state is loaded
+    private void loadEffects() {
+        curTask = null;
+        setDefaultTitle();
+        renderStatisticsCard();
+        renderCreateTaskCard();
+        renderSelectTaskCard();
+        timerCard.decomposeComponent();
+    }
+
+    // MODIFIES: this
+    // EFFECTS: Initializes the main menu card and calls its render method
     private void initializeStatisticsCard() {
         statisticsCard = new JPanel();
         renderStatisticsCard();
     }
 
+    // REQUIRES: statisticsCard has been initialized
+    // MODIFIES: this
+    // EFFECTS: Initializes and adds all components to the statistics card
     protected void renderStatisticsCard() {
         statisticsCard.removeAll();
         JLabel projectLabel = new JLabel("Project statistics:");
-        JLabel totalMinutesLabel = new JLabel("Total timed work (All Time): " + project.calculateTotalMinutes() + " minutes");
+        JLabel totalMinutesLabel = new JLabel("Total timed work (All Time): "
+                + project.calculateTotalMinutes() + " minutes");
         Task mostWorkedOnTask = project.determineMostWorkedOnTask();
         JLabel emptyLabel = new JLabel(" ");
-        JLabel mostWorkedOnTaskLabel = createMostWorkedOnTaskLabel(mostWorkedOnTask);
+        JLabel mostWorkedOnTaskLabel = createTaskDurationLabel(mostWorkedOnTask);
         JLabel currentTaskLabel = new JLabel("Current task statistics: "
                 + ((curTask == null) ? "no task selected" : curTask.getName()));
         statisticsCard.add(projectLabel);
@@ -136,92 +196,54 @@ public class TimerGUI extends JFrame {
         }
     }
 
-    private JLabel createMostWorkedOnTaskLabel(Task mostWorkedOnTask) {
+    // EFFECTS: Generates a JLabel for the given task with statistics
+    private JLabel createTaskDurationLabel(Task task) {
         String base = "Most worked on task: ";
         JLabel mostWorkedOnTaskLabel = new JLabel();
-        if (mostWorkedOnTask == null) {
+        if (task == null) {
             mostWorkedOnTaskLabel.setText(base + "no tasks to display");
             return mostWorkedOnTaskLabel;
         }
-        mostWorkedOnTaskLabel.setText(base + mostWorkedOnTask.getName() + " (" + mostWorkedOnTask.getTotalMinutes() + " minutes)");
+        mostWorkedOnTaskLabel.setText(base + task.getName() + " (" + task.getTotalMinutes() + " minutes)");
         return mostWorkedOnTaskLabel;
     }
 
-    private void initializeMainMenuCard() {
-        mainMenuCard = new JPanel() {
-            //Make the panel wider than it really needs, so
-            //the window's wide enough for the tabs to stay
-            //in one row.
-            public Dimension getPreferredSize() {
-                Dimension size = super.getPreferredSize();
-                size.width += extraWindowWidth;
-                return size;
-            }
-        };
-        renderMainMenuCard();
-    }
-
-    private void renderMainMenuCard() {
-        mainMenuCard.removeAll();
-        JLabel timerIcon = new JLabel(icon);
-        JLabel message = new JLabel("");
-        JButton loadDataButton = new JButton("Load Data");
-        loadDataButton.addActionListener((e) -> {
-            message.setText(loadProject());
-            setDefaultTitle();
-            curTask = null;
-            renderSelectTaskCard();
-            renderStatisticsCard();
-            timerCard.decomposeComponent();
-        });
-        JButton saveDataButton = new JButton("Save Data");
-        saveDataButton.addActionListener((e) -> {
-            message.setText(saveProject());
-        });
-        message.setForeground(Color.blue);
-        mainMenuCard.add(timerIcon);
-        mainMenuCard.add(loadDataButton);
-        mainMenuCard.add(saveDataButton);
-        mainMenuCard.add(new JButton("Quit"));
-        mainMenuCard.add(message);
-    }
-
+    // MODIFIES: this
+    // EFFECTS: Initializes the create task card and calls its render method
     private void initializeCreateTaskCard() {
         createTaskCard = new JPanel();
         renderCreateTaskCard();
     }
 
+    // REQUIRES: createTaskCard has been initialized
+    // MODIFIES: this
+    // EFFECTS: Initializes and adds all components to the create task card
     private void renderCreateTaskCard() {
-        JLabel workDurationLabel = new JLabel("Work Duration:");
-        JTextField workDurationField = new JTextField("25");
-        JLabel breakDurationLabel = new JLabel("Break Duration:");
-        JTextField breakDurationField = new JTextField("5");
-        JLabel longBreakDurationLabel = new JLabel("Long Break Duration:");
-        JTextField longBreakDurationField = new JTextField("15");
+        createTaskCard.removeAll();
+        JPanel subPanelTop = new JPanel();
         JLabel nameLabel = new JLabel("Unique name:");
         JTextField nameField = new JTextField();
         JButton submitButton = new JButton("Submit");
+        subPanelTop.add(nameLabel);
+        subPanelTop.add(nameField);
+        subPanelTop.add(submitButton);
+        JPanel subPanelBottom = new JPanel();
+        JLabel message = new JLabel(" ");
+        subPanelBottom.add(message);
+        message.setForeground(Color.blue);
         submitButton.addActionListener((e) -> {
-            project.addTask(new Task(nameField.getText(), Integer.parseInt(workDurationField.getText()),
-                    Integer.parseInt(breakDurationField.getText()),
-                    Integer.parseInt(longBreakDurationField.getText())));
+            boolean response = project.addTask(new Task(nameField.getText()));
+            message.setText(response ? "Task successfully created" : "Could not create task");
             renderSelectTaskCard();
         });
-        workDurationField.setPreferredSize(FIELD_DIMENSION);
-        breakDurationField.setPreferredSize(FIELD_DIMENSION);
-        longBreakDurationField.setPreferredSize(FIELD_DIMENSION);
         nameField.setPreferredSize(FIELD_DIMENSION);
-        createTaskCard.add(workDurationLabel);
-        createTaskCard.add(workDurationField);
-        createTaskCard.add(breakDurationLabel);
-        createTaskCard.add(breakDurationField);
-        createTaskCard.add(longBreakDurationLabel);
-        createTaskCard.add(longBreakDurationField);
-        createTaskCard.add(nameLabel);
-        createTaskCard.add(nameField);
-        createTaskCard.add(submitButton);
+        createTaskCard.add(subPanelTop);
+        createTaskCard.add(subPanelBottom);
     }
 
+
+    // MODIFIES: this
+    // EFFECTS: loads the project from a file, returns response string
     private String loadProject() {
         try {
             project = jsonReader.read();
@@ -231,7 +253,7 @@ public class TimerGUI extends JFrame {
         }
     }
 
-    // EFFECTS: saves the project to a file
+    // EFFECTS: saves the project to a file, returns response string
     private String saveProject() {
         try {
             jsonWriter.open();
@@ -243,47 +265,51 @@ public class TimerGUI extends JFrame {
         }
     }
 
+    // MODIFIES: this
+    // EFFECTS: Initializes the select task card and calls its render method
     private void initializeSelectTaskCard() {
         selectTaskCard = new JPanel();
+        editTaskPanel = new JPanel();
+        editTaskPanel.setLayout(new GridLayout(4, 2));
         renderSelectTaskCard();
     }
 
+    // REQUIRES: select task card has been initialized
+    // MODIFIES: this
+    // EFFECTS: Initializes and adds all components and action listeners to the select task card
     private void renderSelectTaskCard() {
         selectTaskCard.removeAll();
+        JPanel topPanel = new JPanel();
         List<String> curTasks = project.tasksToStringList();
         JComboBox<String> comboBox = new JComboBox<>(curTasks.toArray(new String[0]));
         comboBox.setMaximumRowCount(5);
         JScrollPane scrollPane = new JScrollPane(comboBox);
         selectTaskCard.add(scrollPane);
-        JLabel message = new JLabel();
-        message.setForeground(Color.blue);
         JButton selectButton = new JButton("Select");
-        selectButton.addActionListener((e) -> {
-            timerCard.decomposeComponent();
-            curTask = project.getTaskFromString((String) comboBox.getSelectedItem());
-            if (curTask != null) {
-                frame.setTitle(J_FRAME_NAME + ": " + curTask.getName());
-                timerCard.renderClockComponent(curTask);
-                renderSelectTaskCard();
-                renderStatisticsCard();
-            }
-        });
-        if (curTask == null) {
-            message.setText("No task currently selected.");
-        } else {
-            message.setText("Current task: " + curTask.getName());
-        }
-        selectTaskCard.add(selectButton);
-        selectTaskCard.add(message);
+        selectButton.addActionListener((e) -> selectTaskEffects((String) comboBox.getSelectedItem()));
+        topPanel.add(selectButton);
+        selectTaskCard.add(topPanel);
+        selectTaskCard.add(editTaskPanel);
+    }
+
+    // MODIFIES: this
+    // EFFECTS: Triggers re-renders and selects curTask based off of given string
+    private void selectTaskEffects(String taskString) {
+        timerCard.decomposeComponent();
+        curTask = project.getTaskFromString(taskString);
         if (curTask != null) {
+            frame.setTitle(J_FRAME_NAME + ": " + curTask.getName());
+            timerCard.renderClockComponent(curTask);
+            renderStatisticsCard();
             renderEditTask();
+            selectTaskCard.revalidate();
         }
     }
 
+    // MODIFIES: this
+    // EFFECTS: Initializes and adds all components and action listeners to the edit task card
     private void renderEditTask() {
-        JPanel workPanel = new JPanel();
-        JPanel breakPanel = new JPanel();
-        JPanel longBreakPanel = new JPanel();
+        editTaskPanel.removeAll();
         JLabel workDurationLabel = new JLabel("Work Duration:");
         JTextField workDurationField = new JTextField(Integer.toString(curTask.getWorkDurationMinutes()));
         JLabel breakDurationLabel = new JLabel("Break Duration:");
@@ -292,37 +318,32 @@ public class TimerGUI extends JFrame {
         JTextField longBreakDurationField = new JTextField(Integer.toString(curTask.getLongBreakDurationMinutes()));
         JButton editButton = new JButton("Edit Task");
         editButton.addActionListener((e) -> {
-            curTask.setWorkDurationMinutes(Integer.parseInt(workDurationField.getText()));
-            curTask.setBreakDurationMinutes(Integer.parseInt(breakDurationField.getText()));
-            curTask.setLongBreakDurationMinutes(Integer.parseInt(longBreakDurationField.getText()));
+            editTask(Integer.parseInt(workDurationField.getText()), Integer.parseInt(breakDurationField.getText()),
+                    Integer.parseInt(longBreakDurationField.getText()));
+            timerCard.renderClockComponent(curTask);
         });
         workDurationField.setPreferredSize(FIELD_DIMENSION);
         breakDurationField.setPreferredSize(FIELD_DIMENSION);
         longBreakDurationField.setPreferredSize(FIELD_DIMENSION);
-        workPanel.add(workDurationLabel);
-        workPanel.add(workDurationField);
-        breakPanel.add(breakDurationLabel);
-        breakPanel.add(breakDurationField);
-        longBreakPanel.add(longBreakDurationLabel);
-        longBreakPanel.add(longBreakDurationField);
-        longBreakPanel.add(editButton);
-        selectTaskCard.add(workPanel);
-        selectTaskCard.add(breakPanel);
-        selectTaskCard.add(longBreakPanel);
+        editTaskPanel.add(workDurationLabel);
+        editTaskPanel.add(workDurationField);
+        editTaskPanel.add(breakDurationLabel);
+        editTaskPanel.add(breakDurationField);
+        editTaskPanel.add(longBreakDurationLabel);
+        editTaskPanel.add(longBreakDurationField);
+        editTaskPanel.add(editButton);
     }
 
+    // EFFECTS: edits the current task with  specified values
+    private void editTask(int workDuration, int breakDuration, int longBreakDuration) {
+        curTask.setWorkDurationMinutes(workDuration);
+        curTask.setBreakDurationMinutes(breakDuration);
+        curTask.setLongBreakDurationMinutes(longBreakDuration);
+    }
+
+    // MODIFIES: this
+    // EFFECTS: Calls the constructor of clock component with this
     private void initializeTimerCard() {
         timerCard = new ClockComponent(this);
-    }
-
-    // EFFECTS: Returns an ImageIcon if the path is valid,
-    // Otherwise returns null
-    private ImageIcon createImageIcon(String path, String description) {
-        java.net.URL imgURL = getClass().getResource(path);
-        if (imgURL != null) {
-            return new ImageIcon(imgURL, description);
-        } else {
-            return null;
-        }
     }
 }

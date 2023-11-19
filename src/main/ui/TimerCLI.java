@@ -15,7 +15,7 @@ import java.util.Scanner;
 // Code influenced by JsonSerializationDemo: https://github.students.cs.ubc.ca/CPSC210/JsonSerializationDemo
 // Code influenced by TellerApp: https://github.students.cs.ubc.ca/CPSC210/TellerApp
 
-// Project timer application
+// task timer command line application
 public class TimerCLI {
     private static final String JSON_STORE = "./data/project.json";
     private Project project;

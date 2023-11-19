@@ -56,6 +56,8 @@ public class Project implements Writable {
         return tasks.get(index);
     }
 
+    // EFFECTS: Returns a task present in the task list based on given string
+    // returns null if not present
     public Task getTaskFromString(String query) {
         Task curTask = null;
         for (int i = 0; i < tasks.size(); i++) {
@@ -80,6 +82,7 @@ public class Project implements Writable {
         return result;
     }
 
+    // EFFECTS: Generates a string list of task names present in task list
     public List<String> tasksToStringList() {
         List<String> result = new ArrayList<>();
         for (int i = 0; i < tasks.size(); i++) {
@@ -88,6 +91,7 @@ public class Project implements Writable {
         return result;
     }
 
+    // EFFECTS: returns the task that has the greatest total minutes
     public Task determineMostWorkedOnTask() {
         if (tasks.size() == 0) {
             return null;

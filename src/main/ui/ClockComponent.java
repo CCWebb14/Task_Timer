@@ -8,11 +8,15 @@ import java.awt.*;
 import java.awt.event.ActionListener;
 import java.time.LocalDate;
 
+// Represents the clock component card, the clock component implements the logic
+// to control the TimerSession object
+// This component is bi-conditional with the timerGUI in order to trigger re-renders
 public class ClockComponent extends JPanel implements TimerEventListener {
     private static final String START_LABEL = "Start";
     private static final String PAUSE_LABEL = "Pause";
     private static final String CANCEL_LABEL = "Cancel";
     private static final Dimension BUTTON_SIZE = new Dimension(100, 30);
+    private final TimerGUI listener;
 
     private JLabel label;
     private JPanel utilityPanel;
@@ -25,13 +29,22 @@ public class ClockComponent extends JPanel implements TimerEventListener {
     private int completedWorkTimers;
     private String curState;
 
-    private TimerGUI listener;
-
+    // EFFECTS: Constructs the ClockComponent
     public ClockComponent(TimerGUI listener) {
         this.listener = listener;
         initializeAndRenderLabel();
     }
 
+    // MODIFIES: this
+    // EFFECTS: Initializes the label with text
+    private void initializeAndRenderLabel() {
+        label = new JLabel("No task currently selected");
+        add(label);
+    }
+
+    // MODIFIES: this
+    // EFFECTS: cancels the timer and removes this as listener
+    // removes all components and resets state
     public void decomposeComponent() {
         if (timerSession != null) {
             timerSession.cancelTimer();
@@ -42,16 +55,15 @@ public class ClockComponent extends JPanel implements TimerEventListener {
         initializeAndRenderLabel();
     }
 
-    private void initializeAndRenderLabel() {
-        label = new JLabel("No task currently selected");
-        add(label);
-    }
-
+    // MODIFIES: this
+    // EFFECTS: resets completedWorkTimers and curState
     private void resetState() {
         completedWorkTimers = 0;
         curState = "Work";
     }
 
+    // MODIFIES: this
+    // EFFECTS: Initializes and adds all components to the clock component
     public void renderClockComponent(Task curTask) {
         this.curTask = curTask;
         this.curState = "Work";
@@ -66,21 +78,13 @@ public class ClockComponent extends JPanel implements TimerEventListener {
         progressBar = new JProgressBar(0, 0, 0);
         progressBar.setStringPainted(true);
         renderBasedOnState();
-        setDimensionsAndAlignment();
         add(label);
         add(utilityPanel);
         add(progressBar);
+        setDimensionsAndAlignment();
     }
 
-    private void setDimensionsAndAlignment() {
-        label.setAlignmentX(Component.CENTER_ALIGNMENT);
-        cancelButton.setPreferredSize(BUTTON_SIZE);
-        timerButton.setPreferredSize(BUTTON_SIZE);
-        utilityPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        utilityPanel.setMaximumSize(new Dimension(300, 50));
-        progressBar.setAlignmentX(Component.CENTER_ALIGNMENT);
-    }
-
+    // EFFECTS: Calls a render method based on curState
     private void renderBasedOnState() {
         if (curState.equals("Work")) {
             renderWork();
@@ -91,6 +95,18 @@ public class ClockComponent extends JPanel implements TimerEventListener {
         }
     }
 
+    // EFFECTS: sets the alignment of all components
+    private void setDimensionsAndAlignment() {
+        label.setAlignmentX(Component.CENTER_ALIGNMENT);
+        cancelButton.setPreferredSize(BUTTON_SIZE);
+        timerButton.setPreferredSize(BUTTON_SIZE);
+        utilityPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        utilityPanel.setMaximumSize(new Dimension(300, 50));
+        progressBar.setAlignmentX(Component.CENTER_ALIGNMENT);
+    }
+
+    // MODIFIES: this
+    // EFFECTS: alters components and action listeners based on work state
     private void renderWork() {
         int workDurationMinutes = curTask.getWorkDurationMinutes();
         createTimerSession(workDurationMinutes);
@@ -107,6 +123,8 @@ public class ClockComponent extends JPanel implements TimerEventListener {
         renderStartButton();
     }
 
+    // MODIFIES: this
+    // EFFECTS: alters components and action listeners based on break state
     private void renderBreak() {
         int breakDurationMinutes = curTask.getBreakDurationMinutes();
         createTimerSession(breakDurationMinutes);
@@ -115,6 +133,8 @@ public class ClockComponent extends JPanel implements TimerEventListener {
         renderStartButton();
     }
 
+    // MODIFIES: this
+    // EFFECTS: alters components and action listeners based on long break state
     private void renderLongBreak() {
         int longBreakDurationMinutes = curTask.getLongBreakDurationMinutes();
         createTimerSession(longBreakDurationMinutes);
@@ -123,12 +143,16 @@ public class ClockComponent extends JPanel implements TimerEventListener {
         renderStartButton();
     }
 
+    // MODIFIES: this
+    // EFFECTS: Initializes a new timer session and sets this as a listener
     private void createTimerSession(int requestedMinutes) {
         timerSession = new TimerSession(requestedMinutes);
         timerSession.setListener(this);
         progressBar.setMaximum(60 * requestedMinutes);
     }
 
+    // MODIFIES: this
+    // EFFECTS: renders the cancel buttons action listeners with no recording
     private void renderCancelButtonNoLog() {
         removeActionListeners(cancelButton);
         cancelButton.addActionListener((e) -> {
@@ -138,6 +162,8 @@ public class ClockComponent extends JPanel implements TimerEventListener {
         });
     }
 
+    // MODIFIES: this
+    // EFFECTS: If the current state is work, call recordMinutesChangeToBreak
     private void calculateAndDetermineState() {
         if (curState.equals("Work")) {
             recordMinutesChangeToBreak();
@@ -146,6 +172,9 @@ public class ClockComponent extends JPanel implements TimerEventListener {
         }
     }
 
+    // MODIFIES: this
+    // EFFECTS: records minutes completed and increments completedWork timers
+    // Alters current state based on completed timers
     private void recordMinutesChangeToBreak() {
         recordMinutes();
         completedWorkTimers++;
@@ -158,11 +187,14 @@ public class ClockComponent extends JPanel implements TimerEventListener {
         }
     }
 
+    // EFFECTS: Triggers recording of completed minutes from the timer session
     private void recordMinutes() {
         int completedMinutes = timerSession.calculateCompletedMinutes();
         curTask.recordTime(LocalDate.now(), completedMinutes);
     }
 
+    // MODIFIES: this
+    // EFFECTS: converts the timer button to a start button
     private void renderStartButton() {
         removeActionListeners(timerButton);
         timerButton.setText(START_LABEL);
@@ -172,6 +204,8 @@ public class ClockComponent extends JPanel implements TimerEventListener {
         });
     }
 
+    // MODIFIES: this
+    // EFFECTS: converts the timer button to a pause button
     private void renderPauseButton() {
         removeActionListeners(timerButton);
         timerButton.setText(PAUSE_LABEL);
@@ -181,13 +215,14 @@ public class ClockComponent extends JPanel implements TimerEventListener {
         });
     }
 
-
-    public void triggerListenerReRender() {
-        // TODO: rerender components of timerGUI when timer is cancelled or completed
+    // EFFECTS: triggers re-render of listener
+    private void triggerListenerReRender() {
         listener.renderStatisticsCard();
     }
 
-
+    // MODIFIES: this
+    // EFFECTS: utilized by TimerSession to update the progress bar on tick and trigger
+    // re-renders when necessary
     @Override
     public void updateClock(String curClock, int secondsCompleted, Boolean timerComplete) {
         progressBar.setString(curClock);
@@ -199,7 +234,8 @@ public class ClockComponent extends JPanel implements TimerEventListener {
         }
     }
 
-    public void removeActionListeners(JButton button) {
+    // EFFECTS: removes all action listeners from given button
+    private void removeActionListeners(JButton button) {
         ActionListener[] listeners = button.getActionListeners();
         if (listeners != null) {
             for (ActionListener listener : listeners) {

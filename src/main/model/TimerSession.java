@@ -9,12 +9,13 @@ import java.util.concurrent.CountDownLatch;
 // A timer is set with a given amount of minutes and performs an operation every second.
 // The object is also given a latch to notify the main thread when it is complete
 public class TimerSession {
-    private int timerDurationMinutes;
+    private final int timerDurationMinutes;
+    private final CountDownLatch latch;
+
     private int minutesRemaining;
     private int secondsRemaining;
     private int secondsCompleted;
     private Timer timer;
-    private CountDownLatch latch;
     private Boolean timerCancelled;
     private Boolean timerComplete;
     private TimerEventListener listener;
@@ -30,14 +31,12 @@ public class TimerSession {
         this.timerCancelled = false;
         this.timerComplete = false;
         this.latch = new CountDownLatch(1);
-        // Triggers event every 1s
-        // if timer is running
+        // Triggers event every 1s if the timer is running
         // Once complete, the latch is counted down in order to notify main thread
         this.timer = new Timer(1000, e -> {
             secondsCompleted++;
             if (secondsRemaining >= 1) {
-                secondsRemaining--;
-                if (secondsRemaining <= 0 && minutesRemaining <= 0) {
+                if (--secondsRemaining <= 0 && minutesRemaining <= 0) {
                     timer.stop();
                     timerComplete = true;
                     this.latch.countDown();
@@ -52,24 +51,23 @@ public class TimerSession {
         });
     }
 
-    // TODO: add doc
+    // MODIFIES: this
+    // EFFECTS: Sets listener to the given listener and triggers update clock on listener
     public void setListener(TimerEventListener listener) {
         this.listener = listener;
         listener.updateClock(minutesRemaining + ":0" + secondsRemaining, secondsCompleted, timerComplete);
     }
 
-    // TODO: add doc
+    // MODIFIES: this
+    // EFFECTS: removes current listener
     public void removeListener() {
         this.listener = null;
     }
 
-    // TODO: add doc
+    // EFFECTS: updates the clock on the listener object
     public void updateListener() {
-        if (secondsRemaining >= 10) {
-            listener.updateClock(minutesRemaining + ":" + secondsRemaining, secondsCompleted, timerComplete);
-        } else {
-            listener.updateClock(minutesRemaining + ":0" + secondsRemaining, secondsCompleted, timerComplete);
-        }
+        String midClock =  ((secondsRemaining >= 10) ? ":" : ":0");
+        listener.updateClock(minutesRemaining + midClock + secondsRemaining, secondsCompleted, timerComplete);
     }
 
     // MODIFIES: this
