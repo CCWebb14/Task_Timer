@@ -156,6 +156,7 @@ public class TimerGUI extends JFrame {
         setDefaultTitle();
         renderStatisticsCard();
         renderCreateTaskCard();
+        editTaskPanel.removeAll();
         renderSelectTaskCard();
         timerCard.decomposeComponent();
     }
