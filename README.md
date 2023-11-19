@@ -26,3 +26,19 @@ The Pomodoro Technique was developed by Francesco Cirillo and it is a time manag
 ### Phase II:
 - As a user, when I select the quit option from the main menu, I want the option to save the data associated to my project (tasks, recorded time) to a file.
 - As a user, when I start the application, I want to be given the option to load a project and it's associated data from a file.
+
+### Phase III: \(Instructions for grader\)
+- When you launch the application you will land on the main menu tab.
+  - Here you can load and save data from the data directory using buttons.
+  - You can also quit the application.
+- You can create and add new tasks to the project on the "Create Task" tab.
+  - Enter a unique name and click the submit button.
+- In order to view all tasks within the project, select the "Select Task" tab.
+  - There is a dropdown here that will allow you to click and select any task within the project.
+  - You will have to press the "Select" button in order to select the item from the dropdown.
+  - Once a task is selected a panel will appear under it that will allow you to edit the timers durations.
+- If you have a task selected, you will be able to click the "Timer" tab
+  - Here you can interact with the timer for the associated task.
+  - Any time here will be logged to the associated task if it is cancelled or if the timer is completed.
+  - NOTE: time will only be logged during work sessions.
+- The "Statistics" tab is always available to view data on the project and the selected task.

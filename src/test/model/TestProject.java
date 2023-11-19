@@ -46,6 +46,7 @@ public class TestProject {
         taskList = testProject.getTaskList();
         assertEquals(1, taskList.size());
         assertEquals(testTask1, taskList.get(0));
+        assertNull(testProject.getTaskFromString("Task2"));
     }
 
     @Test

@@ -66,7 +66,7 @@ public class Project implements Writable {
                 return curTask;
             }
         }
-        return curTask;
+        return null;
     }
 
     // EFFECTS: Creates a string of all tasks and their total minutes
