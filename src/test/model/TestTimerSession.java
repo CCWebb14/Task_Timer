@@ -48,9 +48,9 @@ public class TestTimerSession {
         testTimerSession.startTimer();
         assertEquals(0, testTimerSession.getSecondsRemaining());
         assertEquals(0, testTimerSession.getSecondsCompleted());
-        Thread.sleep(1500);
-        assertEquals(59, testTimerSession.getSecondsRemaining());
-        assertEquals(1, testTimerSession.getSecondsCompleted());
+        Thread.sleep(2500);
+        assertEquals(58, testTimerSession.getSecondsRemaining());
+        assertEquals(2, testTimerSession.getSecondsCompleted());
     }
 
     @Test

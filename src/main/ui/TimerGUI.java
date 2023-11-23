@@ -302,7 +302,6 @@ public class TimerGUI extends JFrame {
             frame.setTitle(J_FRAME_NAME + ": " + curTask.getName());
             timerCard.renderClockComponent(curTask);
             renderStatisticsCard();
-            statisticsCard.revalidate();
             renderEditTask();
             selectTaskCard.revalidate();
         }

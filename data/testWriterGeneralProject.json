@@ -13,15 +13,15 @@
             "task_name": "CPSC121",
             "historyMap": [
                 {
-                    "date": "2023-10-23",
+                    "date": "2023-11-22",
                     "minutes_completed": 5
                 },
                 {
-                    "date": "2023-10-22",
+                    "date": "2023-11-21",
                     "minutes_completed": 10
                 },
                 {
-                    "date": "2023-10-19",
+                    "date": "2023-11-18",
                     "minutes_completed": 100
                 }
             ],
@@ -34,11 +34,11 @@
             "task_name": "PHIL220",
             "historyMap": [
                 {
-                    "date": "2023-10-24",
+                    "date": "2023-11-23",
                     "minutes_completed": 10
                 },
                 {
-                    "date": "2023-10-23",
+                    "date": "2023-11-22",
                     "minutes_completed": 25
                 }
             ],
@@ -50,7 +50,7 @@
         {
             "task_name": "DSCI100",
             "historyMap": [{
-                "date": "2023-10-24",
+                "date": "2023-11-23",
                 "minutes_completed": 15
             }],
             "workDurationMinutes": 4,
