@@ -1,6 +1,5 @@
-package ui;
+package model;
 
-import ui.TimerEventListener;
 
 import javax.swing.Timer;
 import java.util.concurrent.CountDownLatch;
@@ -18,11 +17,11 @@ public class TimerSession {
     private Timer timer;
     private Boolean timerCancelled;
     private Boolean timerComplete;
-    private TimerEventListener listener;
+
 
     // EFFECTS: constructs a timerSession with the given duration,
     // Instantiates a new latch and initializes the timerCancelled and timerComplete boolean values
-    // Instantiates a timer that triggers a second countdown every 1s
+    // Instantiates a timer that triggers tick every 1000ms
     public TimerSession(int minutes) {
         this.timerDurationMinutes = minutes;
         this.minutesRemaining = minutes;
@@ -31,43 +30,26 @@ public class TimerSession {
         this.timerCancelled = false;
         this.timerComplete = false;
         this.latch = new CountDownLatch(1);
-        // Triggers event every 1s if the timer is running
-        // Once complete, the latch is counted down in order to notify main thread
         this.timer = new Timer(1000, e -> {
-            secondsCompleted++;
-            if (secondsRemaining >= 1) {
-                if (--secondsRemaining <= 0 && minutesRemaining <= 0) {
-                    timer.stop();
-                    timerComplete = true;
-                    this.latch.countDown();
-                }
-            } else {
-                minutesRemaining--;
-                secondsRemaining = 59;
-            }
-            if (listener != null) {
-                updateListener();
-            }
+            tick();
         });
     }
 
     // MODIFIES: this
-    // EFFECTS: Sets listener to the given listener and triggers update clock on listener
-    public void setListener(TimerEventListener listener) {
-        this.listener = listener;
-        listener.updateClock(minutesRemaining + ":0" + secondsRemaining, secondsCompleted, timerComplete);
-    }
-
-    // MODIFIES: this
-    // EFFECTS: removes current listener
-    public void removeListener() {
-        this.listener = null;
-    }
-
-    // EFFECTS: updates the clock on the listener object
-    public void updateListener() {
-        String midClock =  ((secondsRemaining >= 10) ? ":" : ":0");
-        listener.updateClock(minutesRemaining + midClock + secondsRemaining, secondsCompleted, timerComplete);
+    // EFFECTS: Triggers event every 1s if the timer is running
+    //         Once complete, the latch is counted down in order to notify main thread
+    public void tick() {
+        secondsCompleted++;
+        if (secondsRemaining >= 1) {
+            if (--secondsRemaining <= 0 && minutesRemaining <= 0) {
+                timer.stop();
+                timerComplete = true;
+                this.latch.countDown();
+            }
+        } else {
+            minutesRemaining--;
+            secondsRemaining = 59;
+        }
     }
 
     // MODIFIES: this
@@ -136,5 +118,9 @@ public class TimerSession {
 
     public int getSecondsRemaining() {
         return secondsRemaining;
+    }
+
+    public int getSecondsCompleted() {
+        return secondsCompleted;
     }
 }

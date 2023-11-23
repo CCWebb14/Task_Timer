@@ -1,6 +1,7 @@
 package ui;
 
 import model.Task;
+import model.TimerSession;
 
 import javax.swing.*;
 import java.awt.*;
@@ -22,7 +23,7 @@ public class ClockComponent extends JPanel implements TimerEventListener {
     private JButton timerButton;
     private JButton cancelButton;
     private JProgressBar progressBar;
-    private TimerSession timerSession;
+    private TimerSessionSubject timerSession;
     private Task curTask;
 
     private int completedWorkTimers;
@@ -145,7 +146,7 @@ public class ClockComponent extends JPanel implements TimerEventListener {
     // MODIFIES: this
     // EFFECTS: Initializes a new timer session and sets this as a listener
     private void createTimerSession(int requestedMinutes) {
-        timerSession = new TimerSession(requestedMinutes);
+        timerSession = new TimerSessionSubject(requestedMinutes);
         timerSession.setListener(this);
         progressBar.setMaximum(60 * requestedMinutes);
     }

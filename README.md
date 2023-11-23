@@ -29,6 +29,7 @@ The Pomodoro Technique was developed by Francesco Cirillo and it is a time manag
 
 ### Phase III: \(Instructions for grader\)
 - When you launch the application you will land on the main menu tab.
+  - The visual component is located here \(clock image\)
   - Here you can load and save data from the data directory using buttons.
   - You can also quit the application.
 - You can create and add new tasks to the project on the "Create Task" tab.
