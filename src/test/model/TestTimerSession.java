@@ -42,12 +42,15 @@ public class TestTimerSession {
     }
 
     @Test
-    void testGetSecondsRemaining() throws InterruptedException {
+    void testGetSecondsRemainingAndCompleted() throws InterruptedException {
         assertEquals(0, testTimerSession.getSecondsRemaining());
+        assertEquals(0, testTimerSession.getSecondsCompleted());
         testTimerSession.startTimer();
         assertEquals(0, testTimerSession.getSecondsRemaining());
+        assertEquals(0, testTimerSession.getSecondsCompleted());
         Thread.sleep(1500);
         assertEquals(59, testTimerSession.getSecondsRemaining());
+        assertEquals(1, testTimerSession.getSecondsCompleted());
     }
 
     @Test

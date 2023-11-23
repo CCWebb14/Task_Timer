@@ -19,7 +19,7 @@ import java.util.List;
 
 // Clock icon taken from https://icons8.com
 
-// task timer gui application
+// Task timer gui application
 public class TimerGUI extends JFrame {
     private static final String JSON_STORE = "./data/project.json";
     private static final String IMAGE_PATH = "icons8-clock-100.png";
@@ -302,6 +302,7 @@ public class TimerGUI extends JFrame {
             frame.setTitle(J_FRAME_NAME + ": " + curTask.getName());
             timerCard.renderClockComponent(curTask);
             renderStatisticsCard();
+            statisticsCard.revalidate();
             renderEditTask();
             selectTaskCard.revalidate();
         }

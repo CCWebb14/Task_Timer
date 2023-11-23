@@ -10,7 +10,7 @@ import java.time.LocalDate;
 
 // Represents the clock component card, the clock component implements the logic
 // to control the TimerSession object
-// This component is bi-conditional with the timerGUI in order to trigger re-renders
+// This component is bidirectional with the timerGUI in order to trigger re-renders
 public class ClockComponent extends JPanel implements TimerEventListener {
     private static final String START_LABEL = "Start";
     private static final String PAUSE_LABEL = "Pause";

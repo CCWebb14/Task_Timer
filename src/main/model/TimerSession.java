@@ -1,6 +1,5 @@
 package model;
 
-
 import javax.swing.Timer;
 import java.util.concurrent.CountDownLatch;
 
@@ -36,12 +35,14 @@ public class TimerSession {
     }
 
     // MODIFIES: this
-    // EFFECTS: Triggers event every 1s if the timer is running
-    //         Once complete, the latch is counted down in order to notify main thread
+    // EFFECTS: increments secondsCompleted, and reduces secondsRemaining if >=1
+    // Otherwise reduces minutesRemaining and sets secondsRemaining to 59
+    // Once complete, the timer is marked complete and the latch is counted down in order to notify awaiting threads
     public void tick() {
         secondsCompleted++;
         if (secondsRemaining >= 1) {
-            if (--secondsRemaining <= 0 && minutesRemaining <= 0) {
+            secondsRemaining--;
+            if (secondsRemaining <= 0 && minutesRemaining <= 0) {
                 timer.stop();
                 timerComplete = true;
                 this.latch.countDown();
@@ -98,18 +99,18 @@ public class TimerSession {
         return (timerDurationMinutes - minutesRemaining);
     }
 
+    // EFFECTS: Returns a boolean value on the state of the timer
+    // Returns True if the timer is running, false otherwise
+    public boolean isTimerRunning() {
+        return timer.isRunning();
+    }
+
     public boolean isTimerComplete() {
         return timerComplete;
     }
 
     public boolean isTimerCancelled() {
         return timerCancelled;
-    }
-
-    // EFFECTS: Returns a boolean value on the state of the timer
-    // Returns True if the timer is running, false otherwise
-    public boolean isTimerRunning() {
-        return timer.isRunning();
     }
 
     public int getMinutesRemaining() {
