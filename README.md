@@ -68,3 +68,17 @@ Logged 1 minutes in task(CPSC121) mapped to 2023-11-23
 
 Process finished with exit code 0
 ```
+#### Task 3:
+**Refactoring**
+
+I could improve my design by separating the TimerGUI class into multiple components. Currently, the entire GUI runs off
+of two classes (TimerGUI and ClockComponent). The TimerGUI utilizes a JTabbedPane to hold 5 cards (Main Menu,
+Statistics, Create Task, Select Task, Timer). I could have refactored each of the cards (JPanels) into new classes
+that TimerGUI would call. I could have sorted these cards (classes) into a directory named Cards within the ui package.
+Additionally, I could create an eventLogPrinter class that would abstract away the logic of printing events from the 
+TimerGUI class.
+
+Another thing I could refactor is the TimerSession class. I believe it might have been a better implementation if 
+the TimerSession only held the seconds, minutes, timerComplete fields and logic on the model side while the ui
+package would instantiate the swing timer. Currently, the TimerSession class holds the swing timer which
+I think is counterintuitive for a model.

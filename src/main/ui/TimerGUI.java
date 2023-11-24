@@ -49,7 +49,7 @@ public class TimerGUI extends JFrame {
     private ClockComponent timerCard;
 
 
-    private Task curTask;
+    protected Task curTask;
     private ImageIcon icon;
 
     // EFFECTS: constructs the TimerGUI and runs app
@@ -324,7 +324,7 @@ public class TimerGUI extends JFrame {
         curTask = project.getTaskFromString(taskString);
         if (curTask != null) {
             frame.setTitle(J_FRAME_NAME + ": " + curTask.getName());
-            timerCard.renderClockComponent(curTask);
+            timerCard.renderClockComponent();
             renderStatisticsCard();
             renderEditTask();
             selectTaskCard.revalidate();
@@ -345,7 +345,7 @@ public class TimerGUI extends JFrame {
         editButton.addActionListener((e) -> {
             curTask.setDurations(Integer.parseInt(workDurationField.getText()), Integer.parseInt(breakDurationField.getText()),
                     Integer.parseInt(longBreakDurationField.getText()));
-            timerCard.renderClockComponent(curTask);
+            timerCard.renderClockComponent();
         });
         workDurationField.setPreferredSize(FIELD_DIMENSION);
         breakDurationField.setPreferredSize(FIELD_DIMENSION);

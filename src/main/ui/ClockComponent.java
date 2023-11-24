@@ -1,7 +1,6 @@
 package ui;
 
 import model.Task;
-import model.TimerSession;
 
 import javax.swing.*;
 import java.awt.*;
@@ -16,7 +15,7 @@ public class ClockComponent extends JPanel implements TimerEventListener {
     private static final String PAUSE_LABEL = "Pause";
     private static final String CANCEL_LABEL = "Cancel";
     private static final Dimension BUTTON_SIZE = new Dimension(100, 30);
-    private final TimerGUI listener;
+    private final TimerGUI mainPanel;
 
     private JLabel label;
     private JPanel utilityPanel;
@@ -24,14 +23,13 @@ public class ClockComponent extends JPanel implements TimerEventListener {
     private JButton cancelButton;
     private JProgressBar progressBar;
     private TimerSessionSubject timerSession;
-    private Task curTask;
 
     private int completedWorkTimers;
     private String curState;
 
     // EFFECTS: Constructs the ClockComponent
-    public ClockComponent(TimerGUI listener) {
-        this.listener = listener;
+    public ClockComponent(TimerGUI mainPanel) {
+        this.mainPanel = mainPanel;
         initializeAndRenderLabel();
     }
 
@@ -64,8 +62,7 @@ public class ClockComponent extends JPanel implements TimerEventListener {
 
     // MODIFIES: this
     // EFFECTS: Initializes and adds all components to the clock component
-    public void renderClockComponent(Task curTask) {
-        this.curTask = curTask;
+    public void renderClockComponent() {
         this.curState = "Work";
         this.completedWorkTimers = 0;
         this.removeAll();
@@ -108,7 +105,7 @@ public class ClockComponent extends JPanel implements TimerEventListener {
     // MODIFIES: this
     // EFFECTS: alters components and action listeners based on work state
     private void renderWork() {
-        int workDurationMinutes = curTask.getWorkDurationMinutes();
+        int workDurationMinutes = mainPanel.curTask.getWorkDurationMinutes();
         createTimerSession(workDurationMinutes);
         label.setText("Work for " + workDurationMinutes + " minute(s)");
         cancelButton.setText(CANCEL_LABEL);
@@ -126,7 +123,7 @@ public class ClockComponent extends JPanel implements TimerEventListener {
     // MODIFIES: this
     // EFFECTS: alters components and action listeners based on break state
     private void renderBreak() {
-        int breakDurationMinutes = curTask.getBreakDurationMinutes();
+        int breakDurationMinutes = mainPanel.curTask.getBreakDurationMinutes();
         createTimerSession(breakDurationMinutes);
         label.setText("Take a break for " + breakDurationMinutes + " minute(s)");
         renderCancelButtonNoLog();
@@ -136,7 +133,7 @@ public class ClockComponent extends JPanel implements TimerEventListener {
     // MODIFIES: this
     // EFFECTS: alters components and action listeners based on long break state
     private void renderLongBreak() {
-        int longBreakDurationMinutes = curTask.getLongBreakDurationMinutes();
+        int longBreakDurationMinutes = mainPanel.curTask.getLongBreakDurationMinutes();
         createTimerSession(longBreakDurationMinutes);
         label.setText("Take a long break for " + longBreakDurationMinutes + " minute(s)");
         renderCancelButtonNoLog();
@@ -190,7 +187,7 @@ public class ClockComponent extends JPanel implements TimerEventListener {
     // EFFECTS: Triggers recording of completed minutes from the timer session
     private void recordMinutes() {
         int completedMinutes = timerSession.calculateCompletedMinutes();
-        curTask.recordTime(LocalDate.now(), completedMinutes);
+        mainPanel.curTask.recordTime(LocalDate.now(), completedMinutes);
     }
 
     // MODIFIES: this
@@ -217,7 +214,7 @@ public class ClockComponent extends JPanel implements TimerEventListener {
 
     // EFFECTS: triggers re-render of listener
     private void triggerListenerReRender() {
-        listener.renderStatisticsCard();
+        mainPanel.renderStatisticsCard();
     }
 
     // MODIFIES: this
