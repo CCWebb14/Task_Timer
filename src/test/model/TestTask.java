@@ -35,11 +35,9 @@ public class TestTask {
         assertEquals(1, testTask.getWorkDurationMinutes());
         assertEquals(2, testTask.getBreakDurationMinutes());
         assertEquals(3, testTask.getLongBreakDurationMinutes());
-        testTask.setWorkDurationMinutes(4);
+        testTask.setDurations(4, 5, 6);
         assertEquals(4, testTask.getWorkDurationMinutes());
-        testTask.setBreakDurationMinutes(5);
         assertEquals(5, testTask.getBreakDurationMinutes());
-        testTask.setLongBreakDurationMinutes(6);
         assertEquals(6, testTask.getLongBreakDurationMinutes());
     }
 

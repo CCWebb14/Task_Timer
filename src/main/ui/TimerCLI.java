@@ -218,14 +218,11 @@ public class TimerCLI {
         keyboard.nextLine();
         System.out.println("Enter a new work duration (minutes):");
         int intInputWork = handleIntInput();
-        curTask.setWorkDurationMinutes(intInput);
         System.out.println("Enter a new short break duration (minutes):");
         int intInputBreak = handleIntInput();
         System.out.println("Enter a new long break duration (minutes):");
         int intInputLongBreak = handleIntInput();
-        curTask.setWorkDurationMinutes(intInputWork);
-        curTask.setBreakDurationMinutes(intInputBreak);
-        curTask.setLongBreakDurationMinutes(intInputLongBreak);
+        curTask.setDurations(intInputWork, intInputBreak, intInputLongBreak);
         System.out.println("Successfully changed timer durations");
     }
 

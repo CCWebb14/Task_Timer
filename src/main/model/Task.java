@@ -27,6 +27,7 @@ public class Task implements Writable {
         this.longBreakDurationMinutes = 15;
         this.totalMinutes = 0;
         this.historyMap = new HashMap<>();
+        EventLog.getInstance().logEvent(new Event("Created new task (" + name + ")"));
     }
 
     // EFFECTS: Constructs a task with a given name and work/break durations,
@@ -53,19 +54,17 @@ public class Task implements Writable {
             dailyMinutes += minutesCompleted;
         }
         historyMap.put(date, dailyMinutes);
+        EventLog.getInstance().logEvent(new Event("Logged " + minutesCompleted + " minutes in task(" + getName()
+                + ") mapped to " + date));
     }
 
-
-    public void setWorkDurationMinutes(int minutes) {
-        this.workDurationMinutes = minutes;
-    }
-
-    public void setBreakDurationMinutes(int minutes) {
-        this.breakDurationMinutes = minutes;
-    }
-
-    public void setLongBreakDurationMinutes(int minutes) {
-        this.longBreakDurationMinutes = minutes;
+    public void setDurations(int workDurationMinutes, int breakDurationMinutes, int longBreakDurationMinutes) {
+        this.workDurationMinutes = workDurationMinutes;
+        this.breakDurationMinutes = breakDurationMinutes;
+        this.longBreakDurationMinutes = longBreakDurationMinutes;
+        EventLog.getInstance().logEvent(new Event("Edited timer durations in task(" + getName()
+                + ") work duration: " + workDurationMinutes + " break duration: " + breakDurationMinutes
+                + " long break duration: " + longBreakDurationMinutes));
     }
 
     public Map<LocalDate, Integer> getHistoryMap() {

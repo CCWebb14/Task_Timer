@@ -1,5 +1,7 @@
 package ui;
 
+import model.EventLog;
+import model.Event;
 import model.Project;
 import model.Task;
 import persistence.JsonReader;
@@ -7,6 +9,8 @@ import persistence.JsonWriter;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.time.LocalDate;
@@ -16,6 +20,7 @@ import java.util.List;
 // https://github.students.cs.ubc.ca/CPSC210/AlarmSystem
 // https://docs.oracle.com/javase/tutorial/uiswing/components/tabbedpane.html
 // https://docs.oracle.com/javase/tutorial/uiswing/components/icon.html
+// https://docs.oracle.com/javase/8/docs/api/java/awt/event/WindowListener.html#windowClosing-java.awt.event.WindowEvent-
 
 // Clock icon taken from https://icons8.com
 
@@ -53,16 +58,35 @@ public class TimerGUI extends JFrame {
     }
 
     // MODIFIES: this
-    // EFFECTS: creates and displays the main JFrame
+    // EFFECTS: creates and displays the main JFrame, sets
     private void runApp() {
         init();
         frame = new JFrame();
         setDefaultTitle();
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         addComponentsToFrame();
         frame.pack();
         frame.setSize(500, 250);
         frame.setVisible(true);
+        frame.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                processExit();
+            }
+        });
+    }
+
+    // EFFECTS: Calls print log and exits with status 0
+    private void processExit() {
+        printLog();
+        System.exit(0);
+    }
+
+    // EFFECTS: Collects the event log and prints each event to the console
+    private void printLog() {
+        EventLog eventLog = EventLog.getInstance();
+        for (Event event : eventLog) {
+            System.out.println(event.toString() + "\n");
+        }
     }
 
     // MODIFIES: this
@@ -140,7 +164,7 @@ public class TimerGUI extends JFrame {
         JButton saveDataButton = new JButton("Save Data");
         saveDataButton.addActionListener((e) -> message.setText(saveProject()));
         JButton quitButton = new JButton("Quit");
-        quitButton.addActionListener((e) -> System.exit(0));
+        quitButton.addActionListener((e) -> processExit());
         message.setForeground(Color.blue);
         mainMenuCard.add(timerIcon);
         mainMenuCard.add(loadDataButton);
@@ -319,7 +343,7 @@ public class TimerGUI extends JFrame {
         JTextField longBreakDurationField = new JTextField(Integer.toString(curTask.getLongBreakDurationMinutes()));
         JButton editButton = new JButton("Edit Task");
         editButton.addActionListener((e) -> {
-            editTask(Integer.parseInt(workDurationField.getText()), Integer.parseInt(breakDurationField.getText()),
+            curTask.setDurations(Integer.parseInt(workDurationField.getText()), Integer.parseInt(breakDurationField.getText()),
                     Integer.parseInt(longBreakDurationField.getText()));
             timerCard.renderClockComponent(curTask);
         });
@@ -333,13 +357,6 @@ public class TimerGUI extends JFrame {
         editTaskPanel.add(longBreakDurationLabel);
         editTaskPanel.add(longBreakDurationField);
         editTaskPanel.add(editButton);
-    }
-
-    // EFFECTS: edits the current task with  specified values
-    private void editTask(int workDuration, int breakDuration, int longBreakDuration) {
-        curTask.setWorkDurationMinutes(workDuration);
-        curTask.setBreakDurationMinutes(breakDuration);
-        curTask.setLongBreakDurationMinutes(longBreakDuration);
     }
 
     // MODIFIES: this

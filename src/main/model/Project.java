@@ -22,12 +22,13 @@ public class Project implements Writable {
     // EFFECTS: Appends a task to the list of tasks,
     // only if the task has a unique name
     public boolean addTask(Task task) {
-        for (int i = 0; i < tasks.size(); i++) {
-            if (tasks.get(i).getName().equals(task.getName())) {
+        for (Task curTask : tasks) {
+            if (curTask.getName().equals(task.getName())) {
                 return false;
             }
         }
         this.tasks.add(task);
+        EventLog.getInstance().logEvent(new Event("Added task (" + task.getName() + ") to project"));
         return true;
     }
 

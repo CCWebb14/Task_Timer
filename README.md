@@ -43,3 +43,28 @@ The Pomodoro Technique was developed by Francesco Cirillo and it is a time manag
   - Any time here will be logged to the associated task if it is cancelled or if the timer is completed.
   - NOTE: time will only be logged during work sessions.
 - The "Statistics" tab is always available to view data on the project and the selected task.
+
+### Phase IV:
+#### Task 2:
+```
+Thu Nov 23 18:36:48 PST 2023
+Created new task (CPSC121)
+
+Thu Nov 23 18:36:48 PST 2023
+Added task (CPSC121) to project
+
+Thu Nov 23 18:36:52 PST 2023
+Created new task (CPSC210)
+
+Thu Nov 23 18:36:52 PST 2023
+Added task (CPSC210) to project
+
+Thu Nov 23 18:37:06 PST 2023
+Edited timer durations in task(CPSC121) work duration: 1 break duration: 2 long break duration: 3
+
+Thu Nov 23 18:38:09 PST 2023
+Logged 1 minutes in task(CPSC121) mapped to 2023-11-23
+
+
+Process finished with exit code 0
+```
