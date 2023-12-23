@@ -2,3 +2,10 @@
 workspace.xml
 .DS_Store
 out/
+.idea/
+*.iml
+build/
+*.iws
+local.properties
+*.log
+*.tmp
